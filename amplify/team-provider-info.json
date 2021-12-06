@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-fluamp-dev-193303-authRole",
+      "UnauthRoleArn": "arn:aws:iam::242197496108:role/amplify-fluamp-dev-193303-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::242197496108:role/amplify-fluamp-dev-193303-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-fluamp-dev-193303-deployment",
+      "UnauthRoleName": "amplify-fluamp-dev-193303-unauthRole",
+      "StackName": "amplify-fluamp-dev-193303",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:242197496108:stack/amplify-fluamp-dev-193303/e6cfb4d0-567f-11ec-9566-066148bd553d",
+      "AmplifyAppId": "du3lhsclqclz3"
+    },
+    "categories": {
+      "auth": {
+        "fluamp46aee1a5": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,672 @@
+Last login: Sat Nov 27 17:45:09 on ttys002
+(base) mchawks0121@reonoMacBook-Air ~ % npm install -g @aws-amplify/cli
+npm ERR! code EACCES
+npm ERR! syscall mkdir
+npm ERR! path /usr/local/lib/node_modules/@aws-amplify
+npm ERR! errno -13
+npm ERR! Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/@aws-amplify'
+npm ERR!  [Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/@aws-amplify'] {
+npm ERR!   errno: -13,
+npm ERR!   code: 'EACCES',
+npm ERR!   syscall: 'mkdir',
+npm ERR!   path: '/usr/local/lib/node_modules/@aws-amplify'
+npm ERR! }
+npm ERR! 
+npm ERR! The operation was rejected by your operating system.
+npm ERR! It is likely you do not have the permissions to access this file as the current user
+npm ERR! 
+npm ERR! If you believe this might be a permissions issue, please double-check the
+npm ERR! permissions of the file and its containing directories, or try running
+npm ERR! the command again as root/Administrator.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/mchawks0121/.npm/_logs/2021-11-27T09_11_19_794Z-debug.log
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % mkdir ~/.npm-global
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % npm config set prefix '~/.npm-global'
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % echo ' export PATH=~/.npm-global/bin:$PATH' >> ~/.bash_profile
+zsh: permission denied: /Users/mchawks0121/.bash_profile
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % source ~/.bash_profile
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % echo ' export PATH=~/.npm-global/bin:$PATH' >> ~/.zsh_profile
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % source ~/.zsh_profile
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % npm config set prefix '~/.npm-global'
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % npm install -g @aws-amplify/cli      
+npm WARN deprecated querystring@0.2.0: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+npm WARN deprecated resolve-url@0.2.1: https://github.com/lydell/resolve-url#deprecated
+npm WARN deprecated urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+npm WARN deprecated uuid@3.3.2: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+npm WARN deprecated graphql-import@0.7.1: GraphQL Import has been deprecated and merged into GraphQL Tools, so it will no longer get updates. Use GraphQL Tools instead to stay up-to-date! Check out https://www.graphql-tools.com/docs/migration-from-import for migration and https://the-guild.dev/blog/graphql-tools-v6 for new changes.
+npm WARN deprecated event-to-promise@0.8.0: Use promise-toolbox/fromEvent instead
+npm WARN deprecated @graphql-toolkit/common@0.6.6: GraphQL Toolkit is deprecated and merged into GraphQL Tools, so it will no longer get updates. Use GraphQL Tools instead to stay up-to-date! Check out https://www.graphql-tools.com/docs/migration-from-toolkit for migration and https://the-guild.dev/blog/graphql-tools-v6 for new changes.
+npm WARN deprecated graphql-tools@4.0.8: This package has been deprecated and now it only exports makeExecutableSchema.\nAnd it will no longer receive updates.\nWe recommend you to migrate to scoped packages such as @graphql-tools/schema, @graphql-tools/utils and etc.\nCheck out https://www.graphql-tools.com to learn what package you should use instead
+npm WARN deprecated uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+npm WARN deprecated @graphql-toolkit/common@0.9.7: GraphQL Toolkit is deprecated and merged into GraphQL Tools, so it will no longer get updates. Use GraphQL Tools instead to stay up-to-date! Check out https://www.graphql-tools.com/docs/migration-from-toolkit for migration and https://the-guild.dev/blog/graphql-tools-v6 for new changes.
+npm WARN deprecated @graphql-toolkit/common@0.9.7: GraphQL Toolkit is deprecated and merged into GraphQL Tools, so it will no longer get updates. Use GraphQL Tools instead to stay up-to-date! Check out https://www.graphql-tools.com/docs/migration-from-toolkit for migration and https://the-guild.dev/blog/graphql-tools-v6 for new changes.
+npm WARN deprecated core-js@2.6.12: core-js@<3.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+npm WARN deprecated core-js@2.6.12: core-js@<3.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+npm WARN deprecated core-js@2.6.12: core-js@<3.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+
+added 1534 packages, and audited 1560 packages in 1m
+
+50 packages are looking for funding
+  run `npm fund` for details
+
+43 vulnerabilities (16 low, 6 moderate, 20 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % amplify configure
+Follow these steps to set up access to your AWS account:
+
+Sign in to your AWS administrator account:
+https://console.aws.amazon.com/
+Press Enter to continue
+
+Specify the AWS Region
+? region:  ap-northeast-1
+Specify the username of the new IAM user:
+? user name:  flutter
+Complete the user creation using the AWS console
+https://console.aws.amazon.com/iam/home?region=ap-northeast-1#/users$new?step=final&accessKey&userNames=flutter&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess
+Press Enter to continue
+
+Enter the access key of the newly created user:
+? accessKeyId:  ********************
+? secretAccessKey:  ****************************************
+This would update/create the AWS Profile in your local machine
+? Profile Name:  flutter
+
+Successfully set up the new user.
+(base) mchawks0121@reonoMacBook-Air ~ % 
+(base) mchawks0121@reonoMacBook-Air ~ % cd Desktop/Flutter_Amplify 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % amplify init
+Note: It is recommended to run this command from the root of your app directory
+? Enter a name for the project FlutterAmplify
+The following configuration will be applied:
+
+Project information
+| Name: FlutterAmplify
+| Environment: dev
+| Default editor: Visual Studio Code
+| App type: flutter
+| Configuration file location: ./lib/
+
+? Initialize the project with the above configuration? No
+? Enter a name for the environment dev
+? Choose your default editor: Android Studio
+? Choose the type of app that you're building flutter
+Please tell us about your project
+? Where do you want to store your configuration file? ./lib/
+Using default provider  awscloudformation
+? Select the authentication method you want to use: AWS profile
+
+For more information on AWS Profiles, see:
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+
+? Please choose the profile you want to use flutter
+Adding backend environment dev to AWS Amplify app: d27b4tbdjp5s6j
+⠧ Initializing project in the cloud...
+
+CREATE_IN_PROGRESS amplify-flutteramplify-dev-182007 AWS::CloudFormation::Stack Sat Nov 27 2021 18:20:11 GMT+0900 (日本標準時) User Initiated
+CREATE_IN_PROGRESS DeploymentBucket                  AWS::S3::Bucket            Sat Nov 27 2021 18:20:15 GMT+0900 (日本標準時)               
+CREATE_IN_PROGRESS UnauthRole                        AWS::IAM::Role             Sat Nov 27 2021 18:20:15 GMT+0900 (日本標準時)               
+CREATE_IN_PROGRESS AuthRole                          AWS::IAM::Role             Sat Nov 27 2021 18:20:16 GMT+0900 (日本標準時)               
+⠧ Initializing project in the cloud...
+
+CREATE_IN_PROGRESS UnauthRole       AWS::IAM::Role  Sat Nov 27 2021 18:20:16 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS AuthRole         AWS::IAM::Role  Sat Nov 27 2021 18:20:17 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS DeploymentBucket AWS::S3::Bucket Sat Nov 27 2021 18:20:17 GMT+0900 (日本標準時) Resource creation Initiated
+⠇ Initializing project in the cloud...
+
+CREATE_COMPLETE UnauthRole AWS::IAM::Role Sat Nov 27 2021 18:20:35 GMT+0900 (日本標準時) 
+CREATE_COMPLETE AuthRole   AWS::IAM::Role Sat Nov 27 2021 18:20:36 GMT+0900 (日本標準時) 
+⠇ Initializing project in the cloud...
+
+CREATE_COMPLETE DeploymentBucket AWS::S3::Bucket Sat Nov 27 2021 18:20:39 GMT+0900 (日本標準時) 
+⠇ Initializing project in the cloud...
+
+CREATE_COMPLETE amplify-flutteramplify-dev-182007 AWS::CloudFormation::Stack Sat Nov 27 2021 18:20:42 GMT+0900 (日本標準時) 
+✔ Successfully created initial AWS cloud resources for deployments.
+✔ Initialized provider successfully.
+Initialized your environment successfully.
+
+Your project has been successfully initialized and connected to the cloud!
+
+Some next steps:
+"amplify status" will show you what you've added already and if it's locally configured or deployed
+"amplify add <category>" will allow you to add features like user login or a backend API
+"amplify push" will build all your local backend resources and provision it in the cloud
+"amplify console" to open the Amplify Console and view your project status
+"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
+
+Pro tip:
+Try "amplify add api" to create a backend API and then "amplify publish" to deploy everything
+
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % amplify add api 
+? Select from one of the below mentioned services: GraphQL
+? Here is the GraphQL API that we will create. Select a setting to edit or continue Continue
+? Choose a schema template: Single object with fields (e.g., “Todo” with ID, name, description)
+
+⚠️  WARNING: your GraphQL API currently allows public create, read, update, and delete access to all models via an API Key. To configure PRODUCTION-READY authorization rules, review: https://docs.amplify.aws/cli/graphql/authorization-rules
+
+GraphQL schema compiled successfully.
+
+Edit your schema at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema.graphql or place .graphql files in a directory at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema
+✔ Do you want to edit the schema now? (Y/n) · no
+✅ Successfully added resource flutteramplify locally
+
+✅ Some next steps:
+"amplify push" will build all your local backend resources and provision it in the cloud
+"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
+
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % amplify push
+⠴ Fetching updates to backend environment: dev from the cloud.
+⚠️  WARNING: your GraphQL API currently allows public create, read, update, and delete access to all models via an API Key. To configure PRODUCTION-READY authorization rules, review: https://docs.amplify.aws/cli/graphql/authorization-rules
+
+⠴ Building resource api/flutteramplifyGraphQL schema compiled successfully.
+
+Edit your schema at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema.graphql or place .graphql files in a directory at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema
+✔ Successfully pulled backend environment dev from the cloud.
+⠸ Building resource api/flutteramplify
+⚠️  WARNING: your GraphQL API currently allows public create, read, update, and delete access to all models via an API Key. To configure PRODUCTION-READY authorization rules, review: https://docs.amplify.aws/cli/graphql/authorization-rules
+
+GraphQL schema compiled successfully.
+
+Edit your schema at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema.graphql or place .graphql files in a directory at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema
+
+    Current Environment: dev
+    
+┌──────────┬────────────────┬───────────┬───────────────────┐
+│ Category │ Resource name  │ Operation │ Provider plugin   │
+├──────────┼────────────────┼───────────┼───────────────────┤
+│ Api      │ flutteramplify │ Create    │ awscloudformation │
+└──────────┴────────────────┴───────────┴───────────────────┘
+? Are you sure you want to continue? Yes
+
+⚠️  WARNING: your GraphQL API currently allows public create, read, update, and delete access to all models via an API Key. To configure PRODUCTION-READY authorization rules, review: https://docs.amplify.aws/cli/graphql/authorization-rules
+
+GraphQL schema compiled successfully.
+
+Edit your schema at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema.graphql or place .graphql files in a directory at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema
+⠸ Building resource api/flutteramplify
+⚠️  WARNING: your GraphQL API currently allows public create, read, update, and delete access to all models via an API Key. To configure PRODUCTION-READY authorization rules, review: https://docs.amplify.aws/cli/graphql/authorization-rules
+
+GraphQL schema compiled successfully.
+
+Edit your schema at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema.graphql or place .graphql files in a directory at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+UPDATE_IN_PROGRESS amplify-flutteramplify-dev-182007 AWS::CloudFormation::Stack Sat Nov 27 2021 18:23:55 GMT+0900 (日本標準時) User Initiated
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS apiflutteramplify AWS::CloudFormation::Stack Sat Nov 27 2021 18:24:01 GMT+0900 (日本標準時) 
+⠧ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS apiflutteramplify AWS::CloudFormation::Stack Sat Nov 27 2021 18:24:02 GMT+0900 (日本標準時) Resource creation Initiated
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS amplify-flutteramplify-dev-182007-apiflutteramplify-1MDOG7U75CNG8 AWS::CloudFormation::Stack Sat Nov 27 2021 18:24:02 GMT+0900 (日本標準時) User Initiated
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS GraphQLAPI AWS::AppSync::GraphQLApi Sat Nov 27 2021 18:24:38 GMT+0900 (日本標準時) 
+⠹ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS GraphQLAPI                          AWS::AppSync::GraphQLApi    Sat Nov 27 2021 18:24:47 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    GraphQLAPI                          AWS::AppSync::GraphQLApi    Sat Nov 27 2021 18:24:47 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS GraphQLAPITransformerSchema3CB2AE18 AWS::AppSync::GraphQLSchema Sat Nov 27 2021 18:24:50 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS GraphQLAPINONEDS95A13CF0            AWS::AppSync::DataSource    Sat Nov 27 2021 18:24:50 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS GraphQLAPIDefaultApiKey215A6DD7     AWS::AppSync::ApiKey        Sat Nov 27 2021 18:24:50 GMT+0900 (日本標準時)                            
+⠸ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS GraphQLAPIDefaultApiKey215A6DD7     AWS::AppSync::ApiKey        Sat Nov 27 2021 18:24:52 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    GraphQLAPIDefaultApiKey215A6DD7     AWS::AppSync::ApiKey        Sat Nov 27 2021 18:24:52 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS GraphQLAPINONEDS95A13CF0            AWS::AppSync::DataSource    Sat Nov 27 2021 18:24:52 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    GraphQLAPINONEDS95A13CF0            AWS::AppSync::DataSource    Sat Nov 27 2021 18:24:52 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS GraphQLAPITransformerSchema3CB2AE18 AWS::AppSync::GraphQLSchema Sat Nov 27 2021 18:24:53 GMT+0900 (日本標準時) Resource creation Initiated
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE GraphQLAPITransformerSchema3CB2AE18 AWS::AppSync::GraphQLSchema Sat Nov 27 2021 18:25:54 GMT+0900 (日本標準時) 
+⠧ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS Todo AWS::CloudFormation::Stack Sat Nov 27 2021 18:25:57 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS Todo AWS::CloudFormation::Stack Sat Nov 27 2021 18:25:58 GMT+0900 (日本標準時) Resource creation Initiated
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS amplify-flutteramplify-dev-182007-apiflutteramplify-1MDOG7U75CNG8-Todo-CJAC4MC1OT59 AWS::CloudFormation::Stack Sat Nov 27 2021 18:25:58 GMT+0900 (日本標準時) User Initiated
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS MutationdeleteTodopostAuth0FunctionMutationdeleteTodopostAuth0FunctionAppSyncFunction483271A2             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationcreateTodoinit0FunctionMutationcreateTodoinit0FunctionAppSyncFunction54DE5B8B                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS TodoIAMRole2DA8E66E                                                                                       AWS::IAM::Role                      Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptionOnCreateTodoDataResolverFnSubscriptionOnCreateTodoDataResolverFnAppSyncFunction462A70C9       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationcreateTodopostAuth0FunctionMutationcreateTodopostAuth0FunctionAppSyncFunctionED59EB9F             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS TodoTable                                                                                                 AWS::DynamoDB::Table                Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononCreateTodopostAuth0FunctionSubscriptiononCreateTodopostAuth0FunctionAppSyncFunction18E34C4E AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononDeleteTodopostAuth0FunctionSubscriptiononDeleteTodopostAuth0FunctionAppSyncFunctionE131CBE7 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QuerygetTodopostAuth0FunctionQuerygetTodopostAuth0FunctionAppSyncFunction6BE14593                         AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:06 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptionOnUpdateTodoDataResolverFnSubscriptionOnUpdateTodoDataResolverFnAppSyncFunction523DF0E4       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptionOnDeleteTodoDataResolverFnSubscriptionOnDeleteTodoDataResolverFnAppSyncFunction3E641E8C       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononUpdateTodopostAuth0FunctionSubscriptiononUpdateTodopostAuth0FunctionAppSyncFunction04445BC7 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationupdateTodoinit0FunctionMutationupdateTodoinit0FunctionAppSyncFunction1B95BB19                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationupdateTodopostAuth0FunctionMutationupdateTodopostAuth0FunctionAppSyncFunction50C507D7             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QuerylistTodospostAuth0FunctionQuerylistTodospostAuth0FunctionAppSyncFunction154D8577                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS TodoTable                                                                                                 AWS::DynamoDB::Table                Sat Nov 27 2021 18:26:07 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS TodoIAMRole2DA8E66E                                                                                       AWS::IAM::Role                      Sat Nov 27 2021 18:26:08 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS MutationdeleteTodopostAuth0FunctionMutationdeleteTodopostAuth0FunctionAppSyncFunction483271A2             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:08 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS SubscriptiononCreateTodopostAuth0FunctionSubscriptiononCreateTodopostAuth0FunctionAppSyncFunction18E34C4E AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    MutationdeleteTodopostAuth0FunctionMutationdeleteTodopostAuth0FunctionAppSyncFunction483271A2             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QuerygetTodopostAuth0FunctionQuerygetTodopostAuth0FunctionAppSyncFunction6BE14593                         AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS SubscriptionOnCreateTodoDataResolverFnSubscriptionOnCreateTodoDataResolverFnAppSyncFunction462A70C9       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS SubscriptiononDeleteTodopostAuth0FunctionSubscriptiononDeleteTodopostAuth0FunctionAppSyncFunctionE131CBE7 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS MutationcreateTodoinit0FunctionMutationcreateTodoinit0FunctionAppSyncFunction54DE5B8B                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    SubscriptiononCreateTodopostAuth0FunctionSubscriptiononCreateTodopostAuth0FunctionAppSyncFunction18E34C4E AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    QuerygetTodopostAuth0FunctionQuerygetTodopostAuth0FunctionAppSyncFunction6BE14593                         AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationupdateTodoinit0FunctionMutationupdateTodoinit0FunctionAppSyncFunction1B95BB19                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS SubscriptionOnUpdateTodoDataResolverFnSubscriptionOnUpdateTodoDataResolverFnAppSyncFunction523DF0E4       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS SubscriptionOnDeleteTodoDataResolverFnSubscriptionOnDeleteTodoDataResolverFnAppSyncFunction3E641E8C       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    SubscriptionOnCreateTodoDataResolverFnSubscriptionOnCreateTodoDataResolverFnAppSyncFunction462A70C9       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    SubscriptiononDeleteTodopostAuth0FunctionSubscriptiononDeleteTodopostAuth0FunctionAppSyncFunctionE131CBE7 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QuerylistTodospostAuth0FunctionQuerylistTodospostAuth0FunctionAppSyncFunction154D8577                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    MutationcreateTodoinit0FunctionMutationcreateTodoinit0FunctionAppSyncFunction54DE5B8B                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    MutationupdateTodoinit0FunctionMutationupdateTodoinit0FunctionAppSyncFunction1B95BB19                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    SubscriptionOnUpdateTodoDataResolverFnSubscriptionOnUpdateTodoDataResolverFnAppSyncFunction523DF0E4       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    SubscriptionOnDeleteTodoDataResolverFnSubscriptionOnDeleteTodoDataResolverFnAppSyncFunction3E641E8C       AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononUpdateTodopostAuth0FunctionSubscriptiononUpdateTodopostAuth0FunctionAppSyncFunction04445BC7 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    QuerylistTodospostAuth0FunctionQuerylistTodospostAuth0FunctionAppSyncFunction154D8577                     AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    SubscriptiononUpdateTodopostAuth0FunctionSubscriptiononUpdateTodopostAuth0FunctionAppSyncFunction04445BC7 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:09 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationcreateTodopostAuth0FunctionMutationcreateTodopostAuth0FunctionAppSyncFunctionED59EB9F             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:10 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    MutationcreateTodopostAuth0FunctionMutationcreateTodopostAuth0FunctionAppSyncFunctionED59EB9F             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:10 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationupdateTodopostAuth0FunctionMutationupdateTodopostAuth0FunctionAppSyncFunction50C507D7             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:10 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    MutationupdateTodopostAuth0FunctionMutationupdateTodopostAuth0FunctionAppSyncFunction50C507D7             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:10 GMT+0900 (日本標準時)                            
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS SubscriptiononCreateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:12 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononDeleteTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:12 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononUpdateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:13 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononCreateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:14 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    SubscriptiononCreateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:14 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononUpdateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:15 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    SubscriptiononUpdateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:15 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS SubscriptiononDeleteTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:15 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    SubscriptiononDeleteTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:15 GMT+0900 (日本標準時)                            
+⠹ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE    TodoIAMRole2DA8E66E    AWS::IAM::Role   Sat Nov 27 2021 18:26:27 GMT+0900 (日本標準時) 
+CREATE_IN_PROGRESS DynamoDBAccess71ABE5AE AWS::IAM::Policy Sat Nov 27 2021 18:26:30 GMT+0900 (日本標準時) 
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS DynamoDBAccess71ABE5AE AWS::IAM::Policy Sat Nov 27 2021 18:26:31 GMT+0900 (日本標準時) Resource creation Initiated
+⠸ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE    TodoTable                        AWS::DynamoDB::Table Sat Nov 27 2021 18:26:38 GMT+0900 (日本標準時) 
+CREATE_IN_PROGRESS TodoIAMRoleDefaultPolicy7BBBF45B AWS::IAM::Policy     Sat Nov 27 2021 18:26:41 GMT+0900 (日本標準時) 
+⠼ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS TodoDataSource                   AWS::AppSync::DataSource Sat Nov 27 2021 18:26:41 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS TodoIAMRoleDefaultPolicy7BBBF45B AWS::IAM::Policy         Sat Nov 27 2021 18:26:42 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS TodoDataSource                   AWS::AppSync::DataSource Sat Nov 27 2021 18:26:44 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    TodoDataSource                   AWS::AppSync::DataSource Sat Nov 27 2021 18:26:44 GMT+0900 (日本標準時)                            
+⠼ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS QueryGetTodoDataResolverFnQueryGetTodoDataResolverFnAppSyncFunctionE2B57DAD             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:46 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QueryListTodosDataResolverFnQueryListTodosDataResolverFnAppSyncFunctionF825FE47         AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:46 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationUpdateTodoDataResolverFnMutationUpdateTodoDataResolverFnAppSyncFunctionBC238C49 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:46 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationCreateTodoDataResolverFnMutationCreateTodoDataResolverFnAppSyncFunction900EC5CF AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:47 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationDeleteTodoDataResolverFnMutationDeleteTodoDataResolverFnAppSyncFunction3879153F AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:47 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QueryListTodosDataResolverFnQueryListTodosDataResolverFnAppSyncFunctionF825FE47         AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:48 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    QueryListTodosDataResolverFnQueryListTodosDataResolverFnAppSyncFunctionF825FE47         AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:48 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS QueryGetTodoDataResolverFnQueryGetTodoDataResolverFnAppSyncFunctionE2B57DAD             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:48 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS MutationUpdateTodoDataResolverFnMutationUpdateTodoDataResolverFnAppSyncFunctionBC238C49 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    QueryGetTodoDataResolverFnQueryGetTodoDataResolverFnAppSyncFunctionE2B57DAD             AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    MutationUpdateTodoDataResolverFnMutationUpdateTodoDataResolverFnAppSyncFunctionBC238C49 AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationCreateTodoDataResolverFnMutationCreateTodoDataResolverFnAppSyncFunction900EC5CF AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    MutationCreateTodoDataResolverFnMutationCreateTodoDataResolverFnAppSyncFunction900EC5CF AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    DynamoDBAccess71ABE5AE                                                                  AWS::IAM::Policy                    Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS MutationDeleteTodoDataResolverFnMutationDeleteTodoDataResolverFnAppSyncFunction3879153F AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:49 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    MutationDeleteTodoDataResolverFnMutationDeleteTodoDataResolverFnAppSyncFunction3879153F AWS::AppSync::FunctionConfiguration Sat Nov 27 2021 18:26:50 GMT+0900 (日本標準時)                            
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS GetTodoResolver    AWS::AppSync::Resolver Sat Nov 27 2021 18:26:52 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS ListTodoResolver   AWS::AppSync::Resolver Sat Nov 27 2021 18:26:52 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UpdateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:52 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS DeleteTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:53 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS CreateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:53 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS GetTodoResolver    AWS::AppSync::Resolver Sat Nov 27 2021 18:26:54 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    GetTodoResolver    AWS::AppSync::Resolver Sat Nov 27 2021 18:26:54 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS ListTodoResolver   AWS::AppSync::Resolver Sat Nov 27 2021 18:26:54 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    ListTodoResolver   AWS::AppSync::Resolver Sat Nov 27 2021 18:26:55 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS DeleteTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:55 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS CreateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:55 GMT+0900 (日本標準時) Resource creation Initiated
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE    DeleteTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:56 GMT+0900 (日本標準時)                            
+CREATE_COMPLETE    CreateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:56 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UpdateTodoResolver AWS::AppSync::Resolver Sat Nov 27 2021 18:26:56 GMT+0900 (日本標準時) Resource creation Initiated
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE UpdateTodoResolver               AWS::AppSync::Resolver Sat Nov 27 2021 18:26:56 GMT+0900 (日本標準時) 
+CREATE_COMPLETE TodoIAMRoleDefaultPolicy7BBBF45B AWS::IAM::Policy       Sat Nov 27 2021 18:27:00 GMT+0900 (日本標準時) 
+⠧ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE amplify-flutteramplify-dev-182007-apiflutteramplify-1MDOG7U75CNG8-Todo-CJAC4MC1OT59 AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:03 GMT+0900 (日本標準時) 
+⠼ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE    Todo                AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:16 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS CustomResourcesjson AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:19 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS CustomResourcesjson AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:20 GMT+0900 (日本標準時) Resource creation Initiated
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS amplify-flutteramplify-dev-182007-apiflutteramplify-1MDOG7U75CNG8-CustomResourcesjson-F5OUKF2S7PD5 AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:20 GMT+0900 (日本標準時) User Initiated
+⠇ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE amplify-flutteramplify-dev-182007-apiflutteramplify-1MDOG7U75CNG8-CustomResourcesjson-F5OUKF2S7PD5 AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:25 GMT+0900 (日本標準時) 
+⠸ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE apiflutteramplify AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:34 GMT+0900 (日本標準時) 
+⠼ Updating resources in the cloud. This may take a few minutes...
+
+UPDATE_COMPLETE_CLEANUP_IN_PROGRESS amplify-flutteramplify-dev-182007 AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:39 GMT+0900 (日本標準時) 
+UPDATE_COMPLETE                     amplify-flutteramplify-dev-182007 AWS::CloudFormation::Stack Sat Nov 27 2021 18:27:40 GMT+0900 (日本標準時) 
+✔ All resources are updated in the cloud
+
+GraphQL endpoint: https://no2gejda4zaqjl4ssy4b5go5ru.appsync-api.ap-northeast-1.amazonaws.com/graphql
+GraphQL API KEY: da2-mntpsyh3xvfy3pq5gm4kusxfve
+
+
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % amplify codegen models
+
+⚠️  WARNING: your GraphQL API currently allows public create, read, update, and delete access to all models via an API Key. To configure PRODUCTION-READY authorization rules, review: https://docs.amplify.aws/cli/graphql/authorization-rules
+
+GraphQL schema compiled successfully.
+
+Edit your schema at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema.graphql or place .graphql files in a directory at /Users/mchawks0121/Desktop/Flutter_Amplify/amplify/backend/api/flutteramplify/schema
+
+Detected Dart SDK version 2.12.0 or above
+Detected feature flag: “enableDartNullSafety : true”
+Generating Dart Models with null safety. To opt out of null safe models, turn off the “enableDartNullSafety” feature flag. Learn more: https://docs.amplify.aws/lib/project-setup/null-safety/q/platform/flutter
+Successfully generated models. Generated models can be found in /Users/mchawks0121/Desktop/Flutter_Amplify/lib/models
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % flutter upgrade
+Flutter is already up to date on channel stable
+Flutter 2.5.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 18116933e7 (6 weeks ago) • 2021-10-15 10:46:35 -0700
+Engine • revision d3ea636dc5
+Tools • Dart 2.14.4
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % amplify delete
+? Are you sure you want to continue? This CANNOT be undone. (This will delete all the environments of the project from the cloud and wipe out all the local files created by Amplify CLI) Yes
+⠋ Deleting resources from the cloud. This may take a few minutes...
+Deleting env: dev.
+✔ Project deleted in the cloud.
+Project deleted locally.
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % cd../
+zsh: no such file or directory: cd../
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % 
+(base) mchawks0121@reonoMacBook-Air Flutter_Amplify % cd ../
+(base) mchawks0121@reonoMacBook-Air .Trash % 
+(base) mchawks0121@reonoMacBook-Air .Trash % cd ../
+(base) mchawks0121@reonoMacBook-Air ~ % cd Desktop 
+(base) mchawks0121@reonoMacBook-Air Desktop % cd fluamp 
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % amplify init
+Note: It is recommended to run this command from the root of your app directory
+? Enter a name for the project fluamp
+The following configuration will be applied:
+
+Project information
+| Name: fluamp
+| Environment: dev
+| Default editor: Visual Studio Code
+| App type: flutter
+| Configuration file location: ./lib/
+
+? Initialize the project with the above configuration? Yes
+Using default provider  awscloudformation
+? Select the authentication method you want to use: AWS profile
+
+For more information on AWS Profiles, see:
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+
+? Please choose the profile you want to use flutter
+Adding backend environment dev to AWS Amplify app: d243blb3kni2wn
+⠧ Initializing project in the cloud...
+
+CREATE_IN_PROGRESS amplify-fluamp-dev-191521 AWS::CloudFormation::Stack Sat Nov 27 2021 19:15:25 GMT+0900 (日本標準時) User Initiated
+CREATE_IN_PROGRESS DeploymentBucket          AWS::S3::Bucket            Sat Nov 27 2021 19:15:29 GMT+0900 (日本標準時)               
+CREATE_IN_PROGRESS UnauthRole                AWS::IAM::Role             Sat Nov 27 2021 19:15:29 GMT+0900 (日本標準時)               
+CREATE_IN_PROGRESS AuthRole                  AWS::IAM::Role             Sat Nov 27 2021 19:15:29 GMT+0900 (日本標準時)               
+⠧ Initializing project in the cloud...
+
+CREATE_IN_PROGRESS AuthRole         AWS::IAM::Role  Sat Nov 27 2021 19:15:30 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS UnauthRole       AWS::IAM::Role  Sat Nov 27 2021 19:15:31 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS DeploymentBucket AWS::S3::Bucket Sat Nov 27 2021 19:15:31 GMT+0900 (日本標準時) Resource creation Initiated
+⠇ Initializing project in the cloud...
+
+CREATE_COMPLETE AuthRole   AWS::IAM::Role Sat Nov 27 2021 19:15:49 GMT+0900 (日本標準時) 
+CREATE_COMPLETE UnauthRole AWS::IAM::Role Sat Nov 27 2021 19:15:50 GMT+0900 (日本標準時) 
+⠇ Initializing project in the cloud...
+
+CREATE_COMPLETE DeploymentBucket AWS::S3::Bucket Sat Nov 27 2021 19:15:53 GMT+0900 (日本標準時) 
+⠇ Initializing project in the cloud...
+
+CREATE_COMPLETE amplify-fluamp-dev-191521 AWS::CloudFormation::Stack Sat Nov 27 2021 19:15:56 GMT+0900 (日本標準時) 
+✔ Successfully created initial AWS cloud resources for deployments.
+✔ Initialized provider successfully.
+Initialized your environment successfully.
+
+Your project has been successfully initialized and connected to the cloud!
+
+Some next steps:
+"amplify status" will show you what you've added already and if it's locally configured or deployed
+"amplify add <category>" will allow you to add features like user login or a backend API
+"amplify push" will build all your local backend resources and provision it in the cloud
+"amplify console" to open the Amplify Console and view your project status
+"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
+
+Pro tip:
+Try "amplify add api" to create a backend API and then "amplify publish" to deploy everything
+
+(base) mchawks0121@reonoMacBook-Air fluamp % amplify add auth
+Using service: Cognito, provided by: awscloudformation
+ 
+ The current configured provider is Amazon Cognito. 
+ 
+ Do you want to use the default authentication and security configuration? Default configuration
+ Warning: you will not be able to edit these selections. 
+ How do you want users to be able to sign in? Username
+ Do you want to configure advanced settings? No, I am done.
+✅ Successfully added auth resource fluampf6c317bb locally
+
+✅ Some next steps:
+"amplify push" will build all your local backend resources and provision it in the cloud
+"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
+
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % amplify push    
+✔ Successfully pulled backend environment dev from the cloud.
+
+    Current Environment: dev
+    
+┌──────────┬────────────────┬───────────┬───────────────────┐
+│ Category │ Resource name  │ Operation │ Provider plugin   │
+├──────────┼────────────────┼───────────┼───────────────────┤
+│ Auth     │ fluampf6c317bb │ Create    │ awscloudformation │
+└──────────┴────────────────┴───────────┴───────────────────┘
+? Are you sure you want to continue? Yes
+⠸ Updating resources in the cloud. This may take a few minutes...
+
+UPDATE_IN_PROGRESS amplify-fluamp-dev-191521 AWS::CloudFormation::Stack Sat Nov 27 2021 19:23:04 GMT+0900 (日本標準時) User Initiated
+⠸ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UpdateRolesWithIDPFunctionRole AWS::IAM::Role             Sat Nov 27 2021 19:23:11 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS authfluampf6c317bb             AWS::CloudFormation::Stack Sat Nov 27 2021 19:23:11 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UpdateRolesWithIDPFunctionRole AWS::IAM::Role             Sat Nov 27 2021 19:23:13 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_IN_PROGRESS authfluampf6c317bb             AWS::CloudFormation::Stack Sat Nov 27 2021 19:23:13 GMT+0900 (日本標準時) Resource creation Initiated
+⠴ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS amplify-fluamp-dev-191521-authfluampf6c317bb-1CJUP4B5Z4A7C AWS::CloudFormation::Stack Sat Nov 27 2021 19:23:13 GMT+0900 (日本標準時) User Initiated
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPool AWS::Cognito::UserPool Sat Nov 27 2021 19:23:20 GMT+0900 (日本標準時) 
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPool AWS::Cognito::UserPool Sat Nov 27 2021 19:23:22 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    UserPool AWS::Cognito::UserPool Sat Nov 27 2021 19:23:22 GMT+0900 (日本標準時)                            
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientWeb AWS::Cognito::UserPoolClient Sat Nov 27 2021 19:23:25 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UserPoolClient    AWS::Cognito::UserPoolClient Sat Nov 27 2021 19:23:25 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UserPoolClientWeb AWS::Cognito::UserPoolClient Sat Nov 27 2021 19:23:27 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    UserPoolClientWeb AWS::Cognito::UserPoolClient Sat Nov 27 2021 19:23:27 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UserPoolClient    AWS::Cognito::UserPoolClient Sat Nov 27 2021 19:23:28 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    UserPoolClient    AWS::Cognito::UserPoolClient Sat Nov 27 2021 19:23:28 GMT+0900 (日本標準時)                            
+⠼ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE UpdateRolesWithIDPFunctionRole AWS::IAM::Role Sat Nov 27 2021 19:23:33 GMT+0900 (日本標準時) 
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientRole AWS::IAM::Role Sat Nov 27 2021 19:23:32 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UserPoolClientRole AWS::IAM::Role Sat Nov 27 2021 19:23:33 GMT+0900 (日本標準時) Resource creation Initiated
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE UserPoolClientRole AWS::IAM::Role Sat Nov 27 2021 19:23:52 GMT+0900 (日本標準時) 
+⠦ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientLambda AWS::Lambda::Function Sat Nov 27 2021 19:23:57 GMT+0900 (日本標準時) 
+⠋ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientLambda AWS::Lambda::Function Sat Nov 27 2021 19:24:00 GMT+0900 (日本標準時) Resource creation Initiated
+⠧ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE UserPoolClientLambda AWS::Lambda::Function Sat Nov 27 2021 19:24:06 GMT+0900 (日本標準時) 
+⠧ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientLambdaPolicy AWS::IAM::Policy Sat Nov 27 2021 19:24:10 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS UserPoolClientLambdaPolicy AWS::IAM::Policy Sat Nov 27 2021 19:24:12 GMT+0900 (日本標準時) Resource creation Initiated
+⠇ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE    UserPoolClientLambdaPolicy AWS::IAM::Policy Sat Nov 27 2021 19:24:30 GMT+0900 (日本標準時) 
+CREATE_IN_PROGRESS UserPoolClientLogPolicy    AWS::IAM::Policy Sat Nov 27 2021 19:24:34 GMT+0900 (日本標準時) 
+⠇ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientLogPolicy AWS::IAM::Policy Sat Nov 27 2021 19:24:36 GMT+0900 (日本標準時) Resource creation Initiated
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE UserPoolClientLogPolicy AWS::IAM::Policy Sat Nov 27 2021 19:24:54 GMT+0900 (日本標準時) 
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientInputs Custom::LambdaCallout Sat Nov 27 2021 19:24:57 GMT+0900 (日本標準時) 
+⠋ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UserPoolClientInputs Custom::LambdaCallout Sat Nov 27 2021 19:25:01 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    UserPoolClientInputs Custom::LambdaCallout Sat Nov 27 2021 19:25:01 GMT+0900 (日本標準時)                            
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS IdentityPool AWS::Cognito::IdentityPool Sat Nov 27 2021 19:25:05 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS IdentityPool AWS::Cognito::IdentityPool Sat Nov 27 2021 19:25:07 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    IdentityPool AWS::Cognito::IdentityPool Sat Nov 27 2021 19:25:08 GMT+0900 (日本標準時)                            
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS IdentityPoolRoleMap AWS::Cognito::IdentityPoolRoleAttachment Sat Nov 27 2021 19:25:11 GMT+0900 (日本標準時)                            
+CREATE_IN_PROGRESS IdentityPoolRoleMap AWS::Cognito::IdentityPoolRoleAttachment Sat Nov 27 2021 19:25:13 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    IdentityPoolRoleMap AWS::Cognito::IdentityPoolRoleAttachment Sat Nov 27 2021 19:25:13 GMT+0900 (日本標準時)                            
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE amplify-fluamp-dev-191521-authfluampf6c317bb-1CJUP4B5Z4A7C AWS::CloudFormation::Stack Sat Nov 27 2021 19:25:16 GMT+0900 (日本標準時) 
+⠏ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE authfluampf6c317bb AWS::CloudFormation::Stack Sat Nov 27 2021 19:25:28 GMT+0900 (日本標準時) 
+⠋ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UpdateRolesWithIDPFunction AWS::Lambda::Function Sat Nov 27 2021 19:25:32 GMT+0900 (日本標準時) 
+⠹ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UpdateRolesWithIDPFunction AWS::Lambda::Function Sat Nov 27 2021 19:25:34 GMT+0900 (日本標準時) Resource creation Initiated
+⠋ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_COMPLETE    UpdateRolesWithIDPFunction        AWS::Lambda::Function Sat Nov 27 2021 19:25:41 GMT+0900 (日本標準時) 
+CREATE_IN_PROGRESS UpdateRolesWithIDPFunctionOutputs Custom::LambdaCallout Sat Nov 27 2021 19:25:43 GMT+0900 (日本標準時) 
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+CREATE_IN_PROGRESS UpdateRolesWithIDPFunctionOutputs Custom::LambdaCallout Sat Nov 27 2021 19:25:48 GMT+0900 (日本標準時) Resource creation Initiated
+CREATE_COMPLETE    UpdateRolesWithIDPFunctionOutputs Custom::LambdaCallout Sat Nov 27 2021 19:25:48 GMT+0900 (日本標準時)                            
+⠙ Updating resources in the cloud. This may take a few minutes...
+
+UPDATE_COMPLETE_CLEANUP_IN_PROGRESS amplify-fluamp-dev-191521 AWS::CloudFormation::Stack Sat Nov 27 2021 19:25:52 GMT+0900 (日本標準時) 
+UPDATE_COMPLETE                     amplify-fluamp-dev-191521 AWS::CloudFormation::Stack Sat Nov 27 2021 19:25:52 GMT+0900 (日本標準時) 
+✔ All resources are updated in the cloud
+
+
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % flutter upgrade 
+Flutter is already up to date on channel stable
+Flutter 2.5.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 18116933e7 (6 weeks ago) • 2021-10-15 10:46:35 -0700
+Engine • revision d3ea636dc5
+Tools • Dart 2.14.4
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % amplify state
+The Amplify CLI can NOT find command:  state
+
+amplify <command> <subcommand>
+
+  init                         Initializes a new project, sets up deployment resources in the cloud, and makes your project ready for Amplify.                              
+  configure                    Configures the attributes of your project for amplify-cli, such as switching front-end framework and adding/removing cloud-provider plugins. 
+  push                         Provisions cloud resources with the latest local developments.                                                                               
+  pull                         Fetch upstream backend environment definition changes from the cloud and updates the local environment to match that definition.             
+  publish                      Executes amplify push, and then builds and publishes client-side application for hosting.                                                    
+  serve                        Executes amplify push, and then executes the project's start command to test run the client-side application locally.                        
+  status [<category> ...]      Shows the state of local resources not yet pushed to the cloud (Create/Update/Delete).                                                       
+  status -v [<category> ...]   Shows the detailed verbose diff between local and deployed resources, including cloudformation-diff                                          
+  delete                       Deletes all of the resources tied to the project from the cloud.                                                                             
+  <category> add               Adds a resource for an Amplify category in your local backend                                                                                
+  <category> update            Update resource for an Amplify category in your local backend.                                                                               
+  <category> push              Provisions all cloud resources in a category with the latest local developments.                                                             
+  <category> remove            Removes a resource for an Amplify category in your local backend.                                                                            
+  <category>                   Displays subcommands of the specified Amplify category.                                                                                      
+  mock                         Run mock server for testing categories locally.                                                                                              
+  codegen                      Generates GraphQL statements(queries, mutations and eventHandlers) and type annotations.                                                     
+  env                          Displays and manages environment related information for your Amplify project.                                                               
+  console                      Opens the web console for the selected cloud resource.                                                                                       
+  logout                       If using temporary cloud provider credentials, this logs out of the account.                                                                 
+
+where <category> is one of: notifications, analytics, function, geo, hosting, interactions, predictions, xr, api, auth, custom, storage
+
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % 
+(base) mchawks0121@reonoMacBook-Air fluamp % amplify status
+
+    Current Environment: dev
+    
+┌──────────┬────────────────┬───────────┬───────────────────┐
+│ Category │ Resource name  │ Operation │ Provider plugin   │
+├──────────┼────────────────┼───────────┼───────────────────┤
+│ Auth     │ fluampf6c317bb │ No Change │ awscloudformation │
+└──────────┴────────────────┴───────────┴───────────────────┘
+
+
+(base) mchawks0121@reonoMacBook-Air fluamp % 
