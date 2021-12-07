@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'settings.dart';
 import './call.dart';
+import 'package:fluamp/sqlite/sql_helper.dart';
 
 class IndexPage extends StatefulWidget {
   @override
@@ -12,10 +13,27 @@ class IndexPage extends StatefulWidget {
 
 class IndexState extends State<IndexPage> {
   final _channelController = TextEditingController();
-
+  final _appidController = TextEditingController();
+  final _tokenController = TextEditingController();
   bool _validateError = false;
-
   ClientRole? _role = ClientRole.Broadcaster;
+  List<Map<String, dynamic>> _journals = [];
+  bool _isLoading = true;
+  // This function is used to fetch all data from the database
+  void _refreshJournals() async {
+    final data = await SQLHelper.getItems();
+    print(data);
+    setState(() {
+      _journals = data;
+      _isLoading = false;
+    });
+  }
+
+    @override
+    void initState() {
+      super.initState();
+      _refreshJournals();
+    }
 
   @override
   void dispose() {
@@ -35,7 +53,7 @@ class IndexState extends State<IndexPage> {
               Row(
                 children: <Widget>[
                   Expanded(
-                      child: TextField(
+                      child: TextFormField(
                         controller: _channelController,
                         decoration: InputDecoration(
                           errorText:
@@ -43,13 +61,34 @@ class IndexState extends State<IndexPage> {
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(width: 1),
                           ),
+                          icon: Icon(Icons.account_balance),
                           hintText: 'チャンネル名',
                         ),
-                      ))
+                      )),
                 ],
               ),
               Column(
                 children: [
+                  TextFormField(
+                    controller: _appidController,
+                    decoration: InputDecoration(
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                      hintText: 'AppId',
+                        icon: Icon(Icons.perm_identity),
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _tokenController,
+                    decoration: InputDecoration(
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                      icon: Icon(Icons.vpn_key),
+                      hintText: 'Token',
+                    ),
+                  ),
                   ListTile(
                     title: Text("クライアントで参加"),
                     leading: Radio(
@@ -90,14 +129,16 @@ class IndexState extends State<IndexPage> {
                         ),
                       ),
                     ),
-                    // Expanded(
-                    //   child: RaisedButton(
-                    //     onPressed: onJoin,
-                    //     child: Text('Join'),
-                    //     color: Colors.blueAccent,
-                    //     textColor: Colors.white,
-                    //   ),
-                    // )
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _deleteItem(_journals[0]['id']),
+                        child: Text('履歴削除'),
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+                            foregroundColor: MaterialStateProperty.all(Colors.white)
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               )
@@ -105,15 +146,57 @@ class IndexState extends State<IndexPage> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => _showForm(null)
+      ),
     );
   }
 
+  void _showForm(id) async {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        context: context,
+        elevation: 10,
+        builder: (_) => ListView.builder(
+          itemCount: _journals.length,
+          itemBuilder: (context, index) => Card(
+            elevation: 30,
+            color: Colors.orange[200],
+            margin: EdgeInsets.all(15),
+            child: ListTile(
+                title: SelectableText('${_journals[index]['channel']}'),
+                subtitle: SelectableText('${_journals[index]['createdAt']}'),
+                trailing: SizedBox(
+                  width: 100,
+                  child: Row(
+                    children: [
+                      IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () => _Inputitem(_journals[index]),
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _deleteItem(_journals[index]['id'])
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+        ),);
+  }
+
   Future<void> onJoin() async {
+    _addItem();
     // update input validation
     setState(() {
       _channelController.text.isEmpty
           ? _validateError = true
           : _validateError = false;
+      APP_ID = _appidController.text;
+      Token = _tokenController.text;
     });
     if (_channelController.text.isNotEmpty) {
       await _handleCameraAndMic(Permission.camera);
@@ -133,5 +216,42 @@ class IndexState extends State<IndexPage> {
   Future<void> _handleCameraAndMic(Permission permission) async {
     final status = await permission.request();
     print(status);
+  }
+
+  // Insert a new journal to the database
+  Future<void> _addItem() async {
+    await SQLHelper.createItem(
+        _channelController.text, _appidController.text, _tokenController.text);
+    _refreshJournals();
+  }
+
+  // Update an existing journal
+  Future<void> _updateItem(int id) async {
+    await SQLHelper.updateItem(
+        id, _channelController.text, _appidController.text, _tokenController.text);
+    _refreshJournals();
+  }
+
+  // Delete an item
+  void _deleteItem(int id) async {
+    await SQLHelper.deleteItem(id);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('履歴を削除しました!'),
+    ));
+    setState(() {
+      _refreshJournals();
+    });
+  }
+
+  void _Inputitem(item) async {
+    setState(() {
+      _channelController.text = item['channel'];
+      _appidController.text = item['appid'];
+      _tokenController.text = item['token'];
+    });
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('履歴を反映しました。'),
+    ));
+    _refreshJournals();
   }
 }

@@ -13,6 +13,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'NotoSansCJKJp',
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.yellow,
+        fontFamily: 'NotoSansCJKJp',
+      ),
       home: Login(),
       routes: <String, WidgetBuilder> {
         '/login': (BuildContext context) => new Login(),
@@ -62,8 +71,6 @@ class _MyAppState extends State<Login> {
                   RaisedButton(
                     color: Colors.red,
                     onPressed: () {
-                      // The function showDialog<T> returns Future<T>.
-                      // Use Navigator.pop() to return value (of type T).
                       showDialog<String>(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
@@ -100,6 +107,7 @@ class _MyAppState extends State<Login> {
                     child: TextField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
+                        icon: Icon(Icons.mail_outline),
                         hintText: '○○○○○○@examle.com',
                         labelText: 'メールアドレス',
                       ),
@@ -111,6 +119,7 @@ class _MyAppState extends State<Login> {
                     child: TextField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
+                        icon: Icon(Icons.vpn_key),
                         hintText: 'password',
                         labelText: 'パスワード',
                       ),
@@ -145,6 +154,7 @@ class _MyAppState extends State<Login> {
                     child: TextField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
+                        icon: Icon(Icons.vpn_key),
                         hintText: '012345',
                         labelText: '確認コード',
                       ),

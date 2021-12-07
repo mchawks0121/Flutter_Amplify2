@@ -44,6 +44,8 @@ dependencies:
   agora_rtc_engine: ^4.0.2
   permission_handler: '<8.3.0'
   intl: ^0.17.0
+  url_launcher: ^6.0.17
+  sqflite: ^2.0.0+4 # sqlite
 
 dev_dependencies:
   flutter_test:

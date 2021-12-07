@@ -5,6 +5,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'amplifyconfiguration.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyChat extends StatefulWidget {
   @override
@@ -33,16 +34,16 @@ class _MyChatState extends State<MyChat> {
   @override
   Widget build(BuildContext context) {
     _subscribe();
-
     return Scaffold(
       body: ListView.builder(
         itemCount: itemMap.length,
         itemBuilder: (context, index) => Card(
+          elevation: 30,
           color: Colors.orange[200],
           margin: EdgeInsets.all(15),
           child: ListTile(
-              title: Text(itemMap[index]['description']),
-              subtitle: Text(itemMap[index]['name']),
+              title: SelectableText(itemMap[index]['description'], onTap: () => _launchURL(itemMap[index]['description'])),
+              subtitle: SelectableText(itemMap[index]['name']),
               trailing: SizedBox(
                 width: 100,
                 child: Row(
@@ -115,30 +116,29 @@ class _MyChatState extends State<MyChat> {
 
     showModalBottomSheet(
       isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
         context: context,
-        elevation: 5,
+        elevation: 10,
         builder: (_) => Container(
           padding: EdgeInsets.only(bottom : MediaQuery.of(context).viewInsets.bottom),
           width: double.infinity,
-          height: 455,
+          height: 600,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-/*
               TextField(
-                controller: _nameInputController,
-                decoration: InputDecoration(hintText: 'タイトル'),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-*/
-              TextField(
+                maxLines: null,
+                //style: TextStyle(backgroundColor: )
                 controller: _descryptionInputController,
-                decoration: InputDecoration(hintText: '内容'),
+                decoration: InputDecoration(
+                    icon: Icon(Icons.comment),
+                    hintText: '内容',
+                labelText: 'コメント *'),
               ),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               ElevatedButton(
                   onPressed: () async {
@@ -156,6 +156,27 @@ class _MyChatState extends State<MyChat> {
             ],
           ),
         ));
+  }
+
+  String? getSplittedURL(String message) {
+    final RegExp urlRegExp = RegExp(
+        r'((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?');
+    final Iterable<RegExpMatch> urlMatches =
+    urlRegExp.allMatches(message);
+    for (Match m in urlMatches) {
+      return(m.group(0));
+    }
+    //return urlMatches as String;
+  }
+
+  _launchURL(uri) async {
+    final url = getSplittedURL(uri);
+    if (await canLaunch(url!)) {
+      await launch(url);
+      print("$urlへ接続します。");
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Future _loadData() async {

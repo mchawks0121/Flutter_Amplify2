@@ -22,11 +22,7 @@ class TabPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.cyan,
-          // If `TabController controller` is not provided, then a
-          // DefaultTabController ancestor must be provided instead.
-          // Another way is to use a self-defined controller, c.f. "Bottom tab
-          // bar" example.
+          backgroundColor: Colors.orangeAccent,
           bottom: TabBar(
             tabs: _kTabs,
           ),
