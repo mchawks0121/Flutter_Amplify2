@@ -35,7 +35,16 @@ class _MyChatState extends State<MyChat> {
   Widget build(BuildContext context) {
     _subscribe();
     return Scaffold(
-      body: ListView.builder(
+      body: Column(
+        children: [
+      Expanded(
+      child: RefreshIndicator(
+      onRefresh: () async {
+    print('Loading');
+    await _loadData();
+    },
+      child: ListView.builder(
+        physics: AlwaysScrollableScrollPhysics(),
         itemCount: itemMap.length,
         itemBuilder: (context, index) => Card(
           elevation: 30,
@@ -67,6 +76,9 @@ class _MyChatState extends State<MyChat> {
                 ),
               )),
         ),
+      ),
+    ))
+    ]
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -198,11 +210,12 @@ class _MyChatState extends State<MyChat> {
         request: GraphQLRequest<String>(
           document: graphQLDocument,
         ));
-    //List<Map<String, dynamic>> _journals = [];
+    itemMap = [];
     var response = await operation.response;
     Map<String, dynamic> map = jsonDecode(response.data);
     setState(() {
-      return map['listTodos'];
+      itemMap = map['listTodos']['items'];
+      itemMap.sort( (a, b) => -a['count'].compareTo(b['count']) ); //要素countで逆順ソート
     });
   }
 

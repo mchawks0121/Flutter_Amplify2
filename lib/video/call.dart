@@ -13,8 +13,10 @@ class CallPage extends StatefulWidget {
   /// 役割
   final ClientRole? role;
 
+  final bool video;
+
   /// チャンネル名
-  const CallPage({Key? key, this.channelName, this.role}) : super(key: key);
+  const CallPage({Key? key, this.channelName, required this.video, this.role}) : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -25,7 +27,8 @@ class _CallPageState extends State<CallPage> {
   final _infoStrings = <String>[];
   bool muted = false;
   late RtcEngine _engine;
-
+  bool _iconswitch = true;
+  late bool _facedetection = false;
   @override
   void dispose() {
     _users.clear();
@@ -63,7 +66,12 @@ class _CallPageState extends State<CallPage> {
   /// 初期化
   Future<void> _initAgoraRtcEngine() async {
     _engine = await RtcEngine.create(APP_ID);
-    await _engine.enableVideo();
+    if (widget.video == false) {
+      await _engine.disableVideo();
+    }else {
+      await _engine.enableVideo();
+    }
+    //await _engine.enableFaceDetection(_facedetection);
     await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
     await _engine.setClientRole(widget.role!);
   }
@@ -211,6 +219,18 @@ class _CallPageState extends State<CallPage> {
             elevation: 2.0,
             fillColor: Colors.white,
             padding: const EdgeInsets.all(12.0),
+          ),
+          RawMaterialButton(
+            onPressed: _onswitchVideo,
+            child: Icon(_iconswitch==true?
+              Icons.videocam:Icons.videocam_off,
+              color: _iconswitch ? Colors.blueAccent : Colors.white,
+              size: 20.0,
+            ),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: _iconswitch ? Colors.white : Colors.blueAccent,
+            padding: const EdgeInsets.all(12.0),
           )
         ],
       ),
@@ -280,6 +300,13 @@ class _CallPageState extends State<CallPage> {
 
   void _onSwitchCamera() {
     _engine.switchCamera();
+  }
+
+  void _onswitchVideo() {
+    setState(() {
+      _iconswitch = !_iconswitch;
+    });
+    _iconswitch==true?_engine.enableVideo(): _engine.disableVideo();
   }
 
   @override

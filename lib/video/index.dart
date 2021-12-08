@@ -17,7 +17,8 @@ class IndexState extends State<IndexPage> {
   final _tokenController = TextEditingController();
   bool _validateError = false;
   ClientRole? _role = ClientRole.Broadcaster;
-  List<Map<String, dynamic>> _journals = [];
+  late bool _switchvideo = true;
+  List<Map<String, dynamic>> _journals = []/*..length=3*/;
   bool _isLoading = true;
   // This function is used to fetch all data from the database
   void _refreshJournals() async {
@@ -44,10 +45,11 @@ class IndexState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          height: 400,
+          height: 500,
           child: Column(
             children: <Widget>[
               Row(
@@ -89,8 +91,16 @@ class IndexState extends State<IndexPage> {
                       hintText: 'Token',
                     ),
                   ),
+                  const Text("ビデオ"),
+                  Switch(
+                      value: _switchvideo,
+                      onChanged: (bool value) {
+                        print('video: ${_switchvideo}');
+                        setState(() => _switchvideo=value);
+                      },
+                  ),
                   ListTile(
-                    title: Text("クライアントで参加"),
+                    title: Text("双方向ビデオ通話"),
                     leading: Radio(
                       value: ClientRole.Broadcaster,
                       groupValue: _role,
@@ -102,7 +112,7 @@ class IndexState extends State<IndexPage> {
                     ),
                   ),
                   ListTile(
-                    title: Text("オーディエンスで参加"),
+                    title: Text("単方向ビデオ通話"),
                     leading: Radio(
                       value: ClientRole.Audience,
                       groupValue: _role,
@@ -185,7 +195,8 @@ class IndexState extends State<IndexPage> {
                   ),
                 )),
           ),
-        ),);
+        ),
+    );
   }
 
   Future<void> onJoin() async {
@@ -206,6 +217,7 @@ class IndexState extends State<IndexPage> {
         MaterialPageRoute(
           builder: (context) => CallPage(
             channelName: _channelController.text,
+            video: _switchvideo,
             role: _role,
           ),
         ),

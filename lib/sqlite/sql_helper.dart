@@ -1,4 +1,7 @@
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:sqflite/sqflite.dart' as sql;
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
@@ -52,12 +55,11 @@ class SQLHelper {
   static Future<int> updateItem(
       int id, String? channel, String? appid, String? token) async {
     final db = await SQLHelper.db();
-
     final data = {
       'channel': channel,
       'appid': appid,
       'token': token,
-      'createdAt': DateTime.now().toString()
+      'createdAt': DateTime.now().toLocal().toString()
     };
 
     final result =

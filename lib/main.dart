@@ -41,7 +41,6 @@ class _MyAppState extends State<Login> {
   final _passwordController = TextEditingController();
   final _verificationController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -51,8 +50,8 @@ class _MyAppState extends State<Login> {
       Amplify.addPlugins([authPlugin]);
       Amplify.addPlugins([apiPlugin]);
       Amplify.configure(amplifyconfig);
+      _signing();
     });
-    _signing();
   }
 
   @override
@@ -66,7 +65,7 @@ class _MyAppState extends State<Login> {
                 children: <Widget>[
                   Container(
                       alignment: Alignment.center,
-                    child: Text("一度ログイン済みの方はこちらへ"),
+                    child: Text("ログイン済みの方はこちらへ"),
                   ),
                   RaisedButton(
                     color: Colors.red,
@@ -76,7 +75,7 @@ class _MyAppState extends State<Login> {
                         builder: (BuildContext context) => AlertDialog(
                           title: const Text('ログイン'),
                           content: const Text(
-                            'ログインセッションを確認します。',
+                            'ログインセッションから認証します。',
                           ),
                           actions: <Widget>[
                             FlatButton(
@@ -245,6 +244,7 @@ class _MyAppState extends State<Login> {
     try {
       var session = await authSession;
       if (session.isSignedIn) {
+        print("自動ログインに成功しました。");
         await Navigator.of(context).push(
             MaterialPageRoute(
                 builder: (context) => TabPage()
