@@ -46,6 +46,7 @@ dependencies:
   intl: ^0.17.0
   url_launcher: ^6.0.17
   sqflite: ^2.0.0+4 # sqlite
+  local_auth: #生体認証
 
 dev_dependencies:
   flutter_test:

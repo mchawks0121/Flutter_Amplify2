@@ -76,4 +76,13 @@ class SQLHelper {
       print("Something went wrong when deleting an item: $err");
     }
   }
+  //all delete
+  static Future<void> deleteAllItem() async {
+    final db = await SQLHelper.db();
+    try {
+      await db.delete("items");
+    } catch (err) {
+      print("Something went wrong when deleting an item: $err");
+    }
+  }
 }

@@ -18,6 +18,72 @@ class _FirstPageState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    const numItems = 20;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("設定"),
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        children: <Widget>[
+        ListTile(
+        title: Text(
+          "ユーザー:   ${user ==""? "ログインしていません": user}" , style: TextStyle(color: Colors.black)
+        ),
+        subtitle: Text("タップでサインアウト"),
+        onLongPress: () {
+          Text('タップでサインアウト');
+        },
+        onTap: () {
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('ログイン'),
+              content: const Text(
+                'サインアウトします',
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('Cancel'),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    _signOut();
+                    Navigator
+                        .pushNamedAndRemoveUntil(
+                    context, "/login", (
+                    _
+                    )
+                    =>
+                    false
+                    );
+                  }
+                  ,
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          ).then((returnVal) {
+            if (returnVal != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('サインアウト: $returnVal'),
+                  action: SnackBarAction(label: 'OK', onPressed: () {}),
+                ),
+              );
+            }
+          });
+        },
+        trailing: null,
+      )
+        ],
+    ),
+    );
+  }
+/*
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
@@ -62,7 +128,7 @@ class _FirstPageState extends State<Home> {
             ]),
       ),
     );
-  }
+  }*/
 
   void _signOut() async {
     try {

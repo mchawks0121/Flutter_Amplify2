@@ -35,6 +35,10 @@ class _MyChatState extends State<MyChat> {
   Widget build(BuildContext context) {
     _subscribe();
     return Scaffold(
+      appBar: AppBar(
+        title: Text("掲示板"),
+        automaticallyImplyLeading: false,
+      ),
       body: Column(
         children: [
       Expanded(

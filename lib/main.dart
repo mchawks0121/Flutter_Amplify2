@@ -2,8 +2,10 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:flutter/services.dart';
 import 'amplifyconfiguration.dart';
 import 'Tab.dart';
+import 'package:local_auth/local_auth.dart';
 
 void main() {
   runApp(App());
@@ -23,9 +25,10 @@ class App extends StatelessWidget {
         fontFamily: 'NotoSansCJKJp',
       ),
       home: Login(),
+      //Login(),
       routes: <String, WidgetBuilder> {
         '/login': (BuildContext context) => new Login(),
-        '/home': (BuildContext context) => new TabPage(),
+        '/tab': (BuildContext context) => new TabPage(),
       },
     );
   }
@@ -40,6 +43,9 @@ class _MyAppState extends State<Login> {
   final _mailAddressController = TextEditingController();
   final _passwordController = TextEditingController();
   final _verificationController = TextEditingController();
+  LocalAuthentication _localAuth = LocalAuthentication();
+  late bool state;
+  List<BiometricType>? _availableBiometrics;
 
   @override
   void initState() {
@@ -50,29 +56,30 @@ class _MyAppState extends State<Login> {
       Amplify.addPlugins([authPlugin]);
       Amplify.addPlugins([apiPlugin]);
       Amplify.configure(amplifyconfig);
-      _signing();
     });
+    checkUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-            title: const Text('ログイン', style: TextStyle(fontFamily: 'Raleway')),
-          ),
-          body: Center(
-            child: ListView(
-                children: <Widget>[
-                  Container(
-                      alignment: Alignment.center,
-                    child: Text("ログイン済みの方はこちらへ"),
-                  ),
-                  RaisedButton(
-                    color: Colors.red,
-                    onPressed: () {
-                      showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
+      appBar: AppBar(
+        title: const Text('ログイン', style: TextStyle(fontFamily: 'Raleway')),
+      ),
+      body: Center(
+        child: ListView(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                child: Text("ログイン済みの方はこちらへ"),
+              ),
+              RaisedButton(
+                color: Colors.red,
+                onPressed: () {
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
                           title: const Text('ログイン'),
                           content: const Text(
                             'ログインセッションから認証します。',
@@ -88,103 +95,130 @@ class _MyAppState extends State<Login> {
                             ),
                           ],
                         ),
-                      ).then((returnVal) {
-                        if (returnVal != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('ログイン: $returnVal'),
-                              action: SnackBarAction(label: 'OK', onPressed: () {}),
-                            ),
-                          );
-                        }
-                      });
-                    },
-                    child: const Text('ログイン済みの方'),
+                  ).then((returnVal) {
+                    if (returnVal != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('ログイン: $returnVal'),
+                          action: SnackBarAction(label: 'OK', onPressed: () {}),
+                        ),
+                      );
+                    }
+                  });
+                },
+                child: const Text('ログイン済みの方'),
+              ),
+              RaisedButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _authenticate();
+                },
+                child: const Text('生体認証(ベータ版)'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.mail_outline),
+                    hintText: '○○○○○○@examle.com',
+                    labelText: 'メールアドレス',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.mail_outline),
-                        hintText: '○○○○○○@examle.com',
-                        labelText: 'メールアドレス',
-                      ),
-                      controller: _mailAddressController,
-                    ),
+                  controller: _mailAddressController,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.vpn_key),
+                    hintText: 'password',
+                    labelText: 'パスワード',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.vpn_key),
-                        hintText: 'password',
-                        labelText: 'パスワード',
-                      ),
-                      obscureText: true,
-                      controller: _passwordController,
-                    ),
+                  obscureText: true,
+                  controller: _passwordController,
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text('ログイン'),
+                  color: Colors.indigo,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () => _signIn(),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text('新規登録申請'),
+                  color: Colors.orangeAccent,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () => _singUp(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.vpn_key),
+                    hintText: '012345',
+                    labelText: '確認コード',
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
-                      child: Text('ログイン'),
-                      color: Colors.indigo,
-                      shape: StadiumBorder(),
-                      textColor: Colors.white,
-                      onPressed: () => _signIn(),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
-                      child: Text('新規登録申請'),
-                      color: Colors.indigo,
-                      shape: StadiumBorder(),
-                      textColor: Colors.white,
-                      onPressed: () => _singUp(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.vpn_key),
-                        hintText: '012345',
-                        labelText: '確認コード',
-                      ),
-                      controller: _verificationController,
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
-                      child: Text('確認コード承認'),
-                      color: Colors.indigo,
-                      shape: StadiumBorder(),
-                      textColor: Colors.white,
-                      onPressed: () => _confirmSignUp(),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
-                      child: Text('ログイン済みの方'),
-                      color: Colors.indigo,
-                      shape: StadiumBorder(),
-                      textColor: Colors.white,
-                      onPressed: () => _signing(),
-                    ),
-                  ),
-                ]),
-          ),
-        );
+                  controller: _verificationController,
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text('確認コード承認'),
+                  color: Colors.orangeAccent,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () => _confirmSignUp(),
+                ),
+              ),
+            ]),
+      ),
+    );
+  }
+
+  Future<void> _getAvailableBiometricTypes() async {
+    List<BiometricType> availableBiometricTypes;
+    try {
+      availableBiometricTypes = await _localAuth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      availableBiometricTypes = <BiometricType>[];
+    }
+    setState(() {
+      _availableBiometrics = availableBiometricTypes;
+    });
+  }
+
+  void _authenticate() async {
+    bool result = false;
+    _getAvailableBiometricTypes();
+    try {
+      if (_availableBiometrics!.contains(BiometricType.face)
+          || _availableBiometrics!.contains(BiometricType.fingerprint)) {
+        setState(() async {
+        result = await _localAuth.authenticateWithBiometrics(localizedReason: "認証してください");
+        });
+      }
+    } on PlatformException catch (e) {
+      print("生体認証結果: $e");
+    }
+    print("生体認証結果: $result");
+    if (result){
+      Navigator.pushReplacementNamed(context, "/tab");
+    };
   }
 
   void _singUp() async {
@@ -212,8 +246,8 @@ class _MyAppState extends State<Login> {
         print("大成功");
         await Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-            builder: (context) => TabPage()
-        ));
+                builder: (context) => TabPage()
+            ));
       } else {
         // Follow more steps
       }
@@ -249,9 +283,29 @@ class _MyAppState extends State<Login> {
             MaterialPageRoute(
                 builder: (context) => TabPage()
             ));
-      // サインインしている場合の処理
+        // サインインしている場合の処理
       }
-      } on AuthException catch (authError) {
+    } on AuthException catch (authError) {}
+  }
+
+  void checkUser() async {
+    var session = await authSession;
+    var user;
+    var attributes = await Amplify.Auth.fetchUserAttributes();
+    for (var attribute in attributes) {
+      if (attribute.userAttributeKey== 'email') {
+        setState(() {
+          user = attribute.value;
+        });
       }
     }
+    print("currentuser: $user");
+    if (user != "") {
+      if (session.isSignedIn) {
+        Navigator.pushReplacementNamed(context, "/tab");
+      } else {
+        Navigator.pushReplacementNamed(context, "/login");
+      }
+    }
+  }
 }

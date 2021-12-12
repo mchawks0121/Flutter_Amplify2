@@ -10,6 +10,8 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>NSFaceIDUsageDescription</key>
+    <string>生体認証に使用します</string>
 	<key>CFBundleName</key>
 	<string>fluamp</string>
 	<key>CFBundlePackageType</key>

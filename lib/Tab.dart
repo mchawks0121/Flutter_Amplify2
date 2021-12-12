@@ -20,10 +20,10 @@ class TabPage extends StatelessWidget {
     return DefaultTabController(
       length: _kTabs.length,
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.orangeAccent,
-          bottom: TabBar(
+        bottomNavigationBar: Material(
+          child: TabBar(
+            indicatorColor: Colors.cyanAccent,
+            labelColor: Colors.black,
             tabs: _kTabs,
           ),
         ),

@@ -45,6 +45,10 @@ class IndexState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+      title: Text("ビデオ通話"),
+        automaticallyImplyLeading: false,
+    ),
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
@@ -100,7 +104,7 @@ class IndexState extends State<IndexPage> {
                       },
                   ),
                   ListTile(
-                    title: Text("双方向ビデオ通話"),
+                    title: Text("ビデオ通話"),
                     leading: Radio(
                       value: ClientRole.Broadcaster,
                       groupValue: _role,
@@ -111,7 +115,7 @@ class IndexState extends State<IndexPage> {
                       },
                     ),
                   ),
-                  ListTile(
+                  /*ListTile(
                     title: Text("単方向ビデオ通話"),
                     leading: Radio(
                       value: ClientRole.Audience,
@@ -122,7 +126,7 @@ class IndexState extends State<IndexPage> {
                         });
                       },
                     ),
-                  )
+                  )*/
                 ],
               ),
               Padding(
@@ -141,7 +145,7 @@ class IndexState extends State<IndexPage> {
                     ),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => _deleteItem(_journals[0]['id']),
+                        onPressed: () => _deleteAllItem(),
                         child: Text('履歴削除'),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Colors.redAccent),
@@ -157,7 +161,7 @@ class IndexState extends State<IndexPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+          child: Icon(Icons.history),
           onPressed: () => _showForm(null)
       ),
     );
@@ -249,6 +253,16 @@ class IndexState extends State<IndexPage> {
     await SQLHelper.deleteItem(id);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('履歴を削除しました!'),
+    ));
+    setState(() {
+      _refreshJournals();
+    });
+  }
+
+  void _deleteAllItem() async {
+    await SQLHelper.deleteAllItem();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('履歴を全削除しました!'),
     ));
     setState(() {
       _refreshJournals();
