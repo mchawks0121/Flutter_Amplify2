@@ -1,6 +1,6 @@
 {
   "auth": {
-    "fluamp46aee1a5": {
+    "fluamp46787e3a": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

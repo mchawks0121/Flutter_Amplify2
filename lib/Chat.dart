@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'amplifyconfiguration.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:simple_url_preview/simple_url_preview.dart';
 
 class MyChat extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _MyChatState extends State<MyChat> {
   List<String> namebuf = [];
   bool _isLoading = true;
   late bool _isEnabled; //amplifyが接続されているか否か
+  String URL = "";
 
   @override
   void initState() {
@@ -35,26 +37,50 @@ class _MyChatState extends State<MyChat> {
   Widget build(BuildContext context) {
     _subscribe();
     return Scaffold(
+      drawerEdgeDragWidth: 0,
       appBar: AppBar(
         title: Text("掲示板"),
         automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+          ),
+          Container(
+            width: double.infinity,
+            child: GestureDetector(
+              onTap: () {
+                _launchURL("https://aws.amazon.com/jp/amplify/"); //amplifyのURL
+              },
+              child: Text("Amazon AWS Amplify",
+                style: TextStyle(color: Colors.red,
+                  decoration: TextDecoration.underline,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+          ),
       Expanded(
+        /*
       child: RefreshIndicator(
       onRefresh: () async {
     print('Loading');
     await _loadData();
-    },
+    },*/
       child: ListView.builder(
         physics: AlwaysScrollableScrollPhysics(),
         itemCount: itemMap.length,
         itemBuilder: (context, index) => Card(
-          elevation: 30,
+          elevation: 100,
           color: Colors.orange[200],
           margin: EdgeInsets.all(15),
-          child: ListTile(
+          child: Column(
+            children: [
+              ListTile(
               title: SelectableText(itemMap[index]['description'], onTap: () => _launchURL(itemMap[index]['description'])),
               subtitle: SelectableText(itemMap[index]['name']),
               trailing: SizedBox(
@@ -78,19 +104,36 @@ class _MyChatState extends State<MyChat> {
                     ),
                   ],
                 ),
-              )),
-        ),
+              ),
+          ),
+              SimpleUrlPreview(
+                isClosable: true,
+                bgColor: Colors.orange[200],
+                url: _URLLink(itemMap[index]['description']).toString()!=""?_URLLink(itemMap[index]['description']).toString():"",
+                titleStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+                descriptionStyle: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).primaryColor,
+                ),
+                siteNameStyle: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).primaryColor,
+                ),
+                onTap:()=> _launchURL(itemMap[index]['description']),
+              ),
+        ]),
+          ),
       ),
-    ))
+    ),
     ]
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: !_isEnabled? (){
-          _showForm(null);
-        }
-        :
-        null
+        onPressed: ()=> _showForm(null)
       ),
     );
   }
@@ -113,10 +156,8 @@ class _MyChatState extends State<MyChat> {
         Amplify.configure(amplifyconfig);
       });
       await Amplify.configure(amplifyconfig);
-      _isEnabled = true;
     } on AmplifyAlreadyConfiguredException {
       print("Amplify_初期化の失敗");
-      _isEnabled = false;
     }
   }
 
@@ -128,6 +169,9 @@ class _MyChatState extends State<MyChat> {
       itemMap.firstWhere((element) => element['id'] == id);
       _nameInputController.text = existingJournal['name'];
       _descryptionInputController.text = existingJournal['description'];
+    }else if(id == null ) {
+      _nameInputController.text = "";
+      _descryptionInputController.text = "";
     }
 
     showModalBottomSheet(
@@ -195,8 +239,13 @@ class _MyChatState extends State<MyChat> {
     }
   }
 
+   String? _URLLink(uri) {
+    final url = getSplittedURL(uri);
+      print("URL変換: $url");
+      return url;
+  }
+
   Future _loadData() async {
-    itemList =[];
     //Future.delay()を使用して擬似的に非同期処理を表現してみた笑
     await Future.delayed(Duration(seconds: 2));
     String graphQLDocument = '''query ListTodos {
@@ -371,10 +420,8 @@ class _MyChatState extends State<MyChat> {
 
       Map<String, dynamic> map = jsonDecode(response.data);
       len = map['listTodos']['items'].length;
-      itemList= [];
       itemMap= [];
       setState(() {
-        //itemMap.add(map['listTodos']['items']);
         itemMap = map['listTodos']['items'];
         itemMap.sort( (a, b) => -a['count'].compareTo(b['count']) ); //要素countで逆順ソート
       });
@@ -387,7 +434,6 @@ class _MyChatState extends State<MyChat> {
           user = attribute.value;
         }
       }
-      itemMap.add("id: 564b3e64-7db5-4370-8b2f-1b0f5c5d37cf, name: 'AWSに', description: '接続できません', owner: ${user}");
       print('Query failed: $e');
     }
   }

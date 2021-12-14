@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'settings.dart';
 import './call.dart';
 import 'package:fluamp/sqlite/sql_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class IndexPage extends StatefulWidget {
   @override
@@ -45,6 +46,7 @@ class IndexState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawerEdgeDragWidth: 0,
       appBar: AppBar(
       title: Text("ビデオ通話"),
         automaticallyImplyLeading: false,
@@ -56,6 +58,23 @@ class IndexState extends State<IndexPage> {
           height: 500,
           child: Column(
             children: <Widget>[
+              Container(
+                width: double.infinity,
+              child: GestureDetector(
+                onTap: () {
+                  _launchURL("https://x.gd/EWvA9"); //agora.io短縮URL
+                },
+                child: Text("Agora.io",
+                  style: TextStyle(color: Colors.red,
+                      decoration: TextDecoration.underline,
+                  ),
+                textAlign: TextAlign.left,
+                  ),
+              ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+              ),
               Row(
                 children: <Widget>[
                   Expanded(
@@ -155,7 +174,7 @@ class IndexState extends State<IndexPage> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -280,4 +299,15 @@ class IndexState extends State<IndexPage> {
     ));
     _refreshJournals();
   }
+
+  _launchURL(uri) async {
+    final url = uri;
+    if (await canLaunch(url!)) {
+      await launch(url);
+      print("$urlへ接続します。");
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
 }

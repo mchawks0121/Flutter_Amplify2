@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:package_info/package_info.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class _FirstPageState extends State<Home> {
   Widget build(BuildContext context) {
     const numItems = 20;
     return Scaffold(
+      drawerEdgeDragWidth: 0,
       appBar: AppBar(
         title: Text("設定"),
         automaticallyImplyLeading: false,
@@ -76,59 +78,30 @@ class _FirstPageState extends State<Home> {
           });
         },
         trailing: null,
-      )
+      ),
+    ListTile(
+    title: Text(
+    "ライセンス"
+    ),
+    subtitle: Text("タップで表示"),
+    onTap: () {
+    _showLicense(context);
+    },)
         ],
     ),
     );
   }
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                  child: Text("ユーザー:   ${user ==""? "ログインしていません": user}" , style: TextStyle(color: Colors.white)),
-                  color: Colors.indigo,
-              ),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text('サインアウト'),
-                  color: Colors.indigo,
-                  shape: StadiumBorder(),
-                  textColor: Colors.white,
-                  onPressed: () => _signOut(),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                    child: Text('ログイン画面へ'),
-                    color: Colors.indigo,
-                    shape: StadiumBorder(),
-                    textColor: Colors.white,
-                    onPressed: _isEnabled ? ()
-                    //true
-                    {
-                      Navigator
-                          .pushNamedAndRemoveUntil(
-                          context, "/login", (_) => false);
-                    } :
-                    //false
-                    null
-                ),
-              ),
-            ]),
-      ),
+
+  Future _showLicense(BuildContext context) async {
+    final info = await PackageInfo.fromPlatform();
+    showLicensePage(
+      context: context,
+      applicationName: info.appName,
+      applicationVersion: info.version,
+      applicationIcon: Icon(Icons.personal_video),
+      applicationLegalese: "fluamp",
     );
-  }*/
+  }
 
   void _signOut() async {
     try {

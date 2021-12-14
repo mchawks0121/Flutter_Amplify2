@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'amplifyconfiguration.dart';
 import 'Tab.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(App());
@@ -57,12 +58,13 @@ class _MyAppState extends State<Login> {
       Amplify.addPlugins([apiPlugin]);
       Amplify.configure(amplifyconfig);
     });
-    checkUser();
+    _authenticate();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawerEdgeDragWidth: 0,
       appBar: AppBar(
         title: const Text('ログイン', style: TextStyle(fontFamily: 'Raleway')),
       ),
@@ -70,51 +72,26 @@ class _MyAppState extends State<Login> {
         child: ListView(
             children: <Widget>[
               Container(
-                alignment: Alignment.center,
-                child: Text("ログイン済みの方はこちらへ"),
+                width: double.infinity,
+                child: GestureDetector(
+                  onTap: () {
+                    _launchURL("https://aws.amazon.com/jp/cognito/"); //amplifyのURL
+                  },
+                  child: Text("Amazon AWS Cognito",
+                    style: TextStyle(color: Colors.red,
+                      decoration: TextDecoration.underline,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
               ),
-              RaisedButton(
-                color: Colors.red,
-                onPressed: () {
-                  showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        AlertDialog(
-                          title: const Text('ログイン'),
-                          content: const Text(
-                            'ログインセッションから認証します。',
-                          ),
-                          actions: <Widget>[
-                            FlatButton(
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            FlatButton(
-                              onPressed: () => _signing(),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                  ).then((returnVal) {
-                    if (returnVal != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('ログイン: $returnVal'),
-                          action: SnackBarAction(label: 'OK', onPressed: () {}),
-                        ),
-                      );
-                    }
-                  });
-                },
-                child: const Text('ログイン済みの方'),
-              ),
-              RaisedButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _authenticate();
-                },
-                child: const Text('生体認証(ベータ版)'),
-              ),
+        Padding(
+        padding: const EdgeInsets.all(10.0),
+        ),
+              Container(
+              alignment: Alignment.center,
+              child: Text("未ログインの方はこちらへ"),
+            ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -185,9 +162,56 @@ class _MyAppState extends State<Login> {
                   onPressed: () => _confirmSignUp(),
                 ),
               ),
+              Container(
+                alignment: Alignment.center,
+                child: Text("ログイン済みの方はこちらへ"),
+              ),
+              RaisedButton(
+                color: Colors.red,
+                onPressed: () {
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
+                          title: const Text('ログイン'),
+                          content: const Text(
+                            'ログインセッションから認証します。',
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            FlatButton(
+                              onPressed: () => _signing(),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                  );
+                },
+                child: const Text('ログイン済みの方'),
+              ),
+              RaisedButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _authenticate();
+                },
+                child: const Text('生体認証(ベータ版)'),
+              ),
             ]),
       ),
     );
+  }
+
+  void _launchURL(uri) async {
+    final url = uri;
+    if (await canLaunch(url!)) {
+      await launch(url);
+      print("$urlへ接続します。");
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Future<void> _getAvailableBiometricTypes() async {
@@ -202,38 +226,104 @@ class _MyAppState extends State<Login> {
     });
   }
 
+  void _authenticaterror() async {
+    print("ログインできません");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('ログインセッションがありません'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+}
+
+  void _signinerror() async {
+    print("ログインできません");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('入力情報が不適当です'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
+  void _confirmerror() async {
+    print("コード承認できません");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('入力コードが不適当です'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
+  void _signuperror() async {
+    print("申請できません");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('入力情報が不適当です'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
+  void _confirmsucess() async {
+    print("新規登録完了しました。");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('承認されました ログインしてください'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
+  void _confirminfo() async {
+    print("新規登録申請しました。");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('メールアドレスに送信しました'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
   void _authenticate() async {
     bool result = false;
     _getAvailableBiometricTypes();
     try {
       if (_availableBiometrics!.contains(BiometricType.face)
           || _availableBiometrics!.contains(BiometricType.fingerprint)) {
-        setState(() async {
         result = await _localAuth.authenticateWithBiometrics(localizedReason: "認証してください");
-        });
       }
     } on PlatformException catch (e) {
       print("生体認証結果: $e");
     }
     print("生体認証結果: $result");
-    if (result){
-      Navigator.pushReplacementNamed(context, "/tab");
-    };
+    var session = await authSession;
+    if (session.isSignedIn) {
+      if (result){
+        await Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => TabPage()
+            ));
+      }else {
+        _authenticaterror();
+      };
+    }
   }
 
   void _singUp() async {
     try {
       Map<String, String> userAttributes = {
         "email": _mailAddressController.text
-        // additional attributes as needed
       };
       SignUpResult res = await Amplify.Auth.signUp(
           username: _mailAddressController.text,
           password: _passwordController.text,
           options: CognitoSignUpOptions(userAttributes: userAttributes));
       print(res.isSignUpComplete);
+      _confirminfo();
     } on AuthException catch (authError) {
-      print("エラー");
+      _signuperror();
     }
   }
 
@@ -243,16 +333,12 @@ class _MyAppState extends State<Login> {
           username: _mailAddressController.text,
           confirmationCode: _verificationController.text);
       if (res.isSignUpComplete) {
-        print("大成功");
-        await Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (context) => TabPage()
-            ));
+        _confirmsucess();
       } else {
-        // Follow more steps
+        _confirmerror();
       }
     } on AuthException catch (authError) {
-      print("エラー");
+      _signinerror();
     }
   }
 
@@ -266,7 +352,7 @@ class _MyAppState extends State<Login> {
               builder: (context) => TabPage()
           ));
     } on AuthException catch (authError) {
-      print("エラー");
+      _signinerror();
     }
   }
 
@@ -283,9 +369,12 @@ class _MyAppState extends State<Login> {
             MaterialPageRoute(
                 builder: (context) => TabPage()
             ));
-        // サインインしている場合の処理
+      }else {
+        _authenticaterror();
       }
-    } on AuthException catch (authError) {}
+    } on AuthException catch (authError) {
+      _authenticaterror();
+    }
   }
 
   void checkUser() async {
@@ -302,9 +391,11 @@ class _MyAppState extends State<Login> {
     print("currentuser: $user");
     if (user != "") {
       if (session.isSignedIn) {
-        Navigator.pushReplacementNamed(context, "/tab");
+        await Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => TabPage()
+            ));
       } else {
-        Navigator.pushReplacementNamed(context, "/login");
       }
     }
   }

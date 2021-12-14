@@ -71,6 +71,10 @@ PODS:
   - local_auth (0.0.1):
     - Flutter
   - ObjectMapper (4.2.0)
+  - package_info (0.0.1):
+    - Flutter
+  - path_provider_ios (0.0.1):
+    - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
   - sqflite (0.0.2):
@@ -89,6 +93,8 @@ DEPENDENCIES:
   - amplify_flutter (from `.symlinks/plugins/amplify_flutter/ios`)
   - Flutter (from `Flutter`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -127,6 +133,10 @@ EXTERNAL SOURCES:
     :path: Flutter
   local_auth:
     :path: ".symlinks/plugins/local_auth/ios"
+  package_info:
+    :path: ".symlinks/plugins/package_info/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   sqflite:
@@ -156,6 +166,8 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   local_auth: ef62030a2731330b95df7ef1331bd15f6a64b8a6
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
