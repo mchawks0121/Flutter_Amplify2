@@ -11,3 +11,8 @@ type Todo @model
   count: Int!
   createdAt: String
 }
+
+type Owner @model
+{
+  owner: String
+}

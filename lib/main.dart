@@ -7,10 +7,13 @@ import 'amplifyconfiguration.dart';
 import 'Tab.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() {
   runApp(App());
 }
+
 
 class App extends StatelessWidget {
   @override
@@ -54,8 +57,10 @@ class _MyAppState extends State<Login> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
       AmplifyAPI apiPlugin = AmplifyAPI();
+      AmplifyStorageS3 storagePlugin = AmplifyStorageS3();
       Amplify.addPlugins([authPlugin]);
       Amplify.addPlugins([apiPlugin]);
+      Amplify.addPlugins([storagePlugin]);
       Amplify.configure(amplifyconfig);
     });
     _authenticate();
@@ -399,4 +404,5 @@ class _MyAppState extends State<Login> {
       }
     }
   }
+
 }

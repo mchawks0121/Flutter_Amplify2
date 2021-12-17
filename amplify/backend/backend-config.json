@@ -1,6 +1,6 @@
 {
   "auth": {
-    "fluamp46787e3a": {
+    "fluampebca61a1": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -40,6 +40,13 @@
           "additionalAuthenticationProviders": []
         }
       }
+    }
+  },
+  "storage": {
+    "mchflutter": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
     }
   }
 }

@@ -49,6 +49,14 @@ dependencies:
   local_auth: #生体認証
   package_info: #ライブラリパッケージ
   simple_url_preview: ^3.0.1
+  image_picker: ^0.8.4+4
+  minio: ^3.1.0 #AWS S3へ接続
+  path:
+  amplify_storage_s3: ^0.2.10
+  cached_network_image: ^3.2.0
+  amazon_cognito_identity_dart_2: ^1.0.3
+  shared_preferences: ^2.0.11
+  flutter_local_notifications: ^9.1.5
 
 dev_dependencies:
   flutter_test:

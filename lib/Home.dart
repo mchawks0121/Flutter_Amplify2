@@ -1,7 +1,10 @@
 import 'package:amplify_flutter/amplify.dart';
+import 'package:fluamp/photosettings.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:package_info/package_info.dart';
+
+import 'developer.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -40,7 +43,7 @@ class _FirstPageState extends State<Home> {
           showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-              title: const Text('ログイン'),
+              title: const Text('サインアウト'),
               content: const Text(
                 'サインアウトします',
               ),
@@ -75,18 +78,44 @@ class _FirstPageState extends State<Home> {
                 ),
               );
             }
-          });
+          }
+          );
         },
         trailing: null,
       ),
-    ListTile(
-    title: Text(
-    "ライセンス"
-    ),
-    subtitle: Text("タップで表示"),
-    onTap: () {
-    _showLicense(context);
-    },)
+          ListTile(
+            title: Text(
+                "ライセンス"
+            ),
+            subtitle: Text("タップで表示"),
+            onTap: () {
+              _showLicense(context);
+              },
+          ),
+          ListTile(
+            title: Text(
+                "My Photos"
+            ),
+            subtitle: Text("タップで編集"),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => Photosettings()
+                  ));
+            },
+          ),
+          ListTile(
+            title: Text(
+                "開発者"
+            ),
+            subtitle: Text("タップで表示"),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => Developer()
+                  ));
+            },
+          ),
         ],
     ),
     );
@@ -99,7 +128,7 @@ class _FirstPageState extends State<Home> {
       applicationName: info.appName,
       applicationVersion: info.version,
       applicationIcon: Icon(Icons.personal_video),
-      applicationLegalese: "fluamp",
+      applicationLegalese: "Flutter × AWS",
     );
   }
 
