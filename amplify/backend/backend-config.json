@@ -1,6 +1,6 @@
 {
   "auth": {
-    "fluampebca61a1": {
+    "fluamp71057749": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -25,6 +25,30 @@
       }
     }
   },
+  "function": {
+    "S3Trigger9eb54df1": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true
+    }
+  },
+  "storage": {
+    "s367dd00fc": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "S3Trigger9eb54df1",
+          "attributes": [
+            "Name",
+            "Arn",
+            "LambdaExecutionRole"
+          ]
+        }
+      ]
+    }
+  },
   "api": {
     "fluamp": {
       "service": "AppSync",
@@ -40,13 +64,6 @@
           "additionalAuthenticationProviders": []
         }
       }
-    }
-  },
-  "storage": {
-    "mchflutter": {
-      "service": "S3",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
     }
   }
 }

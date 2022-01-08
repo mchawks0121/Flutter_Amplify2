@@ -16,3 +16,9 @@ type Owner @model
 {
   owner: String
 }
+
+type Liked @model
+{
+  owner: String
+  commentId: String!
+}

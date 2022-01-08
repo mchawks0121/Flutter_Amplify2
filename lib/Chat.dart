@@ -5,7 +5,9 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:fluamp/LikeChat.dart';
 import 'package:flutter/material.dart';
+import 'ChatSettings.dart';
 import 'amplifyconfiguration.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -69,17 +71,12 @@ class _MyChatState extends State<MyChat> {
         title: Text("掲示板"),
           actions: [
       IconButton(
-      icon: Icon(Icons.autorenew),
+      icon: Icon(Icons.settings),
       onPressed: () => {
-      _fetch(),
-        _initialStarterGet(),
-    if (initialcounter){
-      setAlluser(),
-      _initialStarterSet(),
-    }else{},
-    getAlluser(),
-    _currentuser(),
-    getUrlall(),
+      Navigator.of(context).push(
+      MaterialPageRoute(
+      builder: (context) => LikeChat()
+      ))
       },
     ),
       ]),
@@ -106,12 +103,11 @@ class _MyChatState extends State<MyChat> {
             padding: const EdgeInsets.all(5.0),
           ),
       Expanded(
-        /*
       child: RefreshIndicator(
       onRefresh: () async {
     print('Loading');
     await _loadData();
-    }*/
+    },
       child: ListView.builder(
         physics: AlwaysScrollableScrollPhysics(),
         itemCount: itemMap.length,
@@ -146,6 +142,7 @@ class _MyChatState extends State<MyChat> {
                   Padding(padding: const EdgeInsets.all(40.0)),
                   Row(
                     children: [
+                      (itemMap[index]['owner'] == user)?
                       IconButton(
                           icon: Icon(Icons.edit),
                           iconSize: 20,
@@ -153,7 +150,12 @@ class _MyChatState extends State<MyChat> {
                             _showForm(itemMap[index]['id']);
                           }:
                           null
+                      ):IconButton(
+                          icon: Icon(Icons.grade),
+                          iconSize: 20,
+                          onPressed:()=>{setLiked(itemMap[index]['id'])},
                       ),
+                      (itemMap[index]['owner'] == user)?
                       IconButton(
                           icon: Icon(Icons.delete),
                           iconSize: 20,
@@ -162,6 +164,10 @@ class _MyChatState extends State<MyChat> {
                           }
                               :
                           null
+                      ):IconButton(
+                        icon: Icon(Icons.flight_takeoff),
+                        iconSize: 20,
+                        onPressed:()=>{},
                       ),
                     ],
                   ),
@@ -196,6 +202,7 @@ class _MyChatState extends State<MyChat> {
           ),
       ),
     ),
+      ),
     ]
       ),
       floatingActionButton: FloatingActionButton(
@@ -373,28 +380,15 @@ class _MyChatState extends State<MyChat> {
   Future _loadData() async {
     //Future.delay()を使用して擬似的に非同期処理を表現してみた笑
     await Future.delayed(Duration(seconds: 2));
-    String graphQLDocument = '''query ListTodos {
-      listTodos {
-        items {
-          id
-          name
-          description
-        }
-        nextToken
-      }
-    }''';
-
-    var operation = Amplify.API.query(
-        request: GraphQLRequest<String>(
-          document: graphQLDocument,
-        ));
-    itemMap = [];
-    var response = await operation.response;
-    Map<String, dynamic> map = jsonDecode(response.data);
-    setState(() {
-      itemMap = map['listTodos']['items'];
-      itemMap.sort( (a, b) => -a['count'].compareTo(b['count']) ); //要素countで逆順ソート
-    });
+    _fetch();
+    _initialStarterGet();
+    if (initialcounter){
+    setAlluser();
+    _initialStarterSet();
+    }else{};
+    getAlluser();
+    _currentuser();
+    getUrlall();
   }
 
   void _create() async {
@@ -551,14 +545,6 @@ class _MyChatState extends State<MyChat> {
         itemMap.sort( (a, b) => -a['count'].compareTo(b['count']) ); //要素countで逆順ソート
       });
     } on ApiException catch (e) {
-      var attributes = await Amplify.Auth.fetchUserAttributes();
-      var user = "";
-      for (var attribute in attributes) {
-        if (attribute.userAttributeKey== 'email') {
-          print("user's email is ${attribute.value}");
-          user = attribute.value;
-        }
-      }
       print('Query failed: $e');
     }
   }
@@ -753,6 +739,64 @@ class _MyChatState extends State<MyChat> {
     } on ApiException catch (e) {
       print('failed: $e');
     }
+  }
+
+  void setLiked(id) async {
+    try {
+      String graphQLDocument =
+      '''mutation CreateLiked(\$owner: String!, \$commentId: String!) {
+              createLiked(input: {owner: \$owner, commentId: \$commentId}) {
+                owner
+                commentId
+              }
+        }''';
+
+      var attributes = await Amplify.Auth.fetchUserAttributes();
+      var user = "";
+      List<String> str = [];
+      for (var attribute in attributes) {
+        if (attribute.userAttributeKey== 'email') {
+          user = attribute.value;
+        }
+      }
+      str = user.split('@');
+      var variables = {
+        "owner": str[0],
+        "commentId": id
+      };
+      var request = GraphQLRequest<String>(
+          document: graphQLDocument, variables: variables);
+
+      var operation = Amplify.API.mutate(request: request);
+      var response = await operation.response;
+
+      var data = response.data;
+      print('Likedresult: ' + data);
+      _confirmLiked();
+    } on ApiException catch (e) {
+      print('Likedfailed: $e');
+      _notconfirmLiked();
+    }
+  }
+
+  void _confirmLiked() async {
+    print("Like!");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('お気に入りに登録しました'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
+  void _notconfirmLiked() async {
+    print("Not Like!");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('お気に入りに登録できませんでした'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
   }
 
   void getAlluser() async {

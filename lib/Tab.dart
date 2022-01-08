@@ -13,21 +13,23 @@ class TabPage extends StatelessWidget {
       Home(),
     ];
     final _kTabs = <Tab>[
-      const Tab(icon: Icon(Icons.cloud), text: 'ビデオ通話'),
+      const Tab(icon: Icon(Icons.cloud_queue), text: 'ビデオ通話'),
       const Tab(icon: Icon(Icons.chat_bubble_outline), text: '掲示板'),
-      const Tab(icon: Icon(Icons.settings), text: 'マイページ'),
+      const Tab(icon: Icon(Icons.person_outline), text: 'マイページ'),
     ];
     return DefaultTabController(
       length: _kTabs.length,
       child: Scaffold(
-        bottomNavigationBar: Material(
+        bottomNavigationBar: SafeArea(
           child: TabBar(
-            indicatorColor: Colors.cyanAccent,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.blue,
             labelColor: Colors.black,
             tabs: _kTabs,
           ),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: _kTabPages,
         ),
       ),
