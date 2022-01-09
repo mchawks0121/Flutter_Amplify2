@@ -1,9 +1,10 @@
 import 'package:amplify_flutter/amplify.dart';
+import 'package:fluamp/Security.dart';
 import 'package:fluamp/photosettings.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:package_info/package_info.dart';
-
+import 'Security.dart';
 import 'developer.dart';
 
 class Home extends StatefulWidget {
@@ -33,7 +34,7 @@ class _FirstPageState extends State<Home> {
         children: <Widget>[
         ListTile(
         title: Text(
-          "ユーザー:   ${user ==""? "ログインしていません": user}" , style: TextStyle(color: Colors.black)
+          "ユーザー:   ${user ==""? "ログインしていません": user}"
         ),
         subtitle: Text("タップでサインアウト"),
         onLongPress: () {
@@ -83,6 +84,18 @@ class _FirstPageState extends State<Home> {
         },
         trailing: null,
       ),
+          ListTile(
+            title: Text(
+                "セキュリティ"
+            ),
+            subtitle: Text("タップで表示"),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => Security()
+                  ));
+            },
+          ),
           ListTile(
             title: Text(
                 "ライセンス"

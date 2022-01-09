@@ -195,7 +195,6 @@ void _photoset() async {
       var attributes = await Amplify.Auth.fetchUserAttributes();
       for (var attribute in attributes) {
         if (attribute.userAttributeKey== 'email') {
-          print("user's email is ${attribute.value}");
           setState(() {
             user = attribute.value;
           });

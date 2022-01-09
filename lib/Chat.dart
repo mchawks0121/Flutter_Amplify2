@@ -7,6 +7,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:fluamp/LikeChat.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'ChatSettings.dart';
 import 'amplifyconfiguration.dart';
 import 'package:intl/intl.dart';
@@ -71,7 +72,7 @@ class _MyChatState extends State<MyChat> {
         title: Text("掲示板"),
           actions: [
       IconButton(
-      icon: Icon(Icons.settings),
+      icon: Icon(Icons.grade),
       onPressed: () => {
       Navigator.of(context).push(
       MaterialPageRoute(
@@ -153,7 +154,9 @@ class _MyChatState extends State<MyChat> {
                       ):IconButton(
                           icon: Icon(Icons.grade),
                           iconSize: 20,
-                          onPressed:()=>{setLiked(itemMap[index]['id'])},
+                          onPressed:()=>{
+                            setLiked(itemMap[index]['id'])
+                          },
                       ),
                       (itemMap[index]['owner'] == user)?
                       IconButton(
@@ -167,7 +170,9 @@ class _MyChatState extends State<MyChat> {
                       ):IconButton(
                         icon: Icon(Icons.flight_takeoff),
                         iconSize: 20,
-                        onPressed:()=>{},
+                        onPressed:()=>{
+                          _share(itemMap[index]['description'])
+                        },
                       ),
                     ],
                   ),
@@ -335,7 +340,7 @@ class _MyChatState extends State<MyChat> {
                     }
                     Navigator.of(context).pop();
                   },
-                  label: Text(id == null ? '作成' : '変更')
+                  label: Text('')
                   )
             ],
           ),
@@ -413,7 +418,6 @@ class _MyChatState extends State<MyChat> {
       List<String> str = [];
       for (var attribute in attributes) {
         if (attribute.userAttributeKey== 'email') {
-          print("user's email is ${attribute.value}");
           user = attribute.value;
         }
       }
@@ -532,7 +536,6 @@ class _MyChatState extends State<MyChat> {
       var user = "";
       for (var attribute in attributes) {
         if (attribute.userAttributeKey== 'email') {
-          print("user's email is ${attribute.value}");
           user = attribute.value;
         }
       }
@@ -682,13 +685,11 @@ class _MyChatState extends State<MyChat> {
       var attributes = await Amplify.Auth.fetchUserAttributes();
       for (var attribute in attributes) {
         if (attribute.userAttributeKey== 'email') {
-          print("user's email is ${attribute.value}");
           setState(() {
             user = attribute.value;
           });
         }
       }
-      print('In getUrl');
       var key = user.split("@");
       S3GetUrlOptions options = S3GetUrlOptions(
           accessLevel: StorageAccessLevel.guest, expires: 10000);
@@ -720,7 +721,6 @@ class _MyChatState extends State<MyChat> {
       List<String> str = [];
       for (var attribute in attributes) {
         if (attribute.userAttributeKey== 'email') {
-          print("user's email is ${attribute.value}");
           user = attribute.value;
         }
       }
@@ -848,6 +848,10 @@ class _MyChatState extends State<MyChat> {
     });
     print('getStatus $initialcounter');
   }
+}
+
+void _share(code) async {
+  Share.share(code);
 }
 
 

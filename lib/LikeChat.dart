@@ -84,7 +84,7 @@ class _LikeChatState extends State<LikeChat> {
               onPressed: () => {
                 Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (context) => LikeChat()
+                        builder: (context) => ChatSettings()
                     ))
               },
             ),
@@ -101,13 +101,16 @@ class _LikeChatState extends State<LikeChat> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   print('Loading');
+                  getLiked();
+                  getUrlall();
+                  _fetch();
                 },
                 child: ListView.builder(
                   physics: AlwaysScrollableScrollPhysics(),
                   itemCount: Liked.length,
                   itemBuilder: (context, index) => Card(
                     elevation: 100,
-                    color: Colors.orange[200],
+                    color: Colors.amber[200],
                     margin: EdgeInsets.all(15),
                     child: Column(
                         children: [
@@ -164,7 +167,7 @@ class _LikeChatState extends State<LikeChat> {
                           ),
                           SimpleUrlPreview(
                             isClosable: true,
-                            bgColor: Colors.orange[200],
+                            bgColor: Colors.amber[200],
                             url: _URLLink(Liked[index]['description']).toString()!=""?_URLLink(Liked[index]['description']).toString():"",
                             titleStyle: TextStyle(
                               fontSize: 16,
@@ -227,23 +230,7 @@ class _LikeChatState extends State<LikeChat> {
       print('user: ${Listowner}\n id: ${Listid}\n');
     } on ApiException catch (e) {
       print('Query failed: $e');
-      _notconfirmLiked();
     }
-  }
-
-  void _notconfirmLiked() async {
-    print("were not like");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('お気に入りありません'),
-        action: SnackBarAction(label: 'OK', onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => MyChat()
-              ));
-        }),
-      ),
-    );
   }
 
   void _currentuser() async {
@@ -349,13 +336,14 @@ class _LikeChatState extends State<LikeChat> {
       Map<String, dynamic> map = jsonDecode(response.data);
       itemMap= [];
       itemLike = [];
+      Liked = [];
       itemLike = likedMap.toList();
       var itemlikelen;
       var itemmaplen;
       List<String> userstr = user.split('@');
       setState(() {
         itemMap = map['listTodos']['items'];
-        itemlikelen  = itemLike.length;
+        itemlikelen  = itemLike[0].length;
         itemmaplen = itemMap.length;
         for (int i=0;i<itemlikelen;i++) {
           print("currentuser: ${userstr[0]}");
@@ -368,6 +356,7 @@ class _LikeChatState extends State<LikeChat> {
               print("itemMap: ${itemMap[j]['id']}");
               if (itemMap[j]['id'] == itemLike[0][i]['commentId']) {
                 Liked.add(itemMap[j]);
+                print("itemlikelen: ${itemlikelen}");
                 print("Likedlength: ${Liked.length}");
                 print("InsertLiked: ${itemMap[j]}");
                 print("LikedData: $Liked");
@@ -375,7 +364,6 @@ class _LikeChatState extends State<LikeChat> {
             }
           }
           else {
-            _notconfirmLiked();
           }
         }
         Liked.sort( (a, b) => -a['count'].compareTo(b['count']) );
@@ -484,7 +472,6 @@ class _LikeChatState extends State<LikeChat> {
       _confirmLiked();
     } on ApiException catch (e) {
       print('Likedfailed: $e');
-      _notconfirmLiked();
     }
   }
 

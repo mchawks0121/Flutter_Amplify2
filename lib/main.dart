@@ -50,7 +50,7 @@ class _MyAppState extends State<Login> {
   LocalAuthentication _localAuth = LocalAuthentication();
   late bool state;
   List<BiometricType>? _availableBiometrics;
-
+  var user = "";
   @override
   void initState() {
     super.initState();
@@ -64,6 +64,7 @@ class _MyAppState extends State<Login> {
       Amplify.configure(amplifyconfig);
     });
     _authenticate();
+    checkUser();
   }
 
   @override
@@ -144,29 +145,6 @@ class _MyAppState extends State<Login> {
                   onPressed: () => _singUp(),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    icon: Icon(Icons.vpn_key),
-                    hintText: '012345',
-                    labelText: '確認コード',
-                  ),
-                  controller: _verificationController,
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text('確認コード承認'),
-                  color: Colors.orangeAccent,
-                  shape: StadiumBorder(),
-                  textColor: Colors.white,
-                  onPressed: () => _confirmSignUp(),
-                ),
-              ),
               Container(
                 alignment: Alignment.center,
                 child: Text("ログイン済みの方はこちらへ"),
@@ -204,8 +182,111 @@ class _MyAppState extends State<Login> {
                 },
                 child: const Text('生体認証(ベータ版)'),
               ),
+              RaisedButton(
+                color: Colors.yellow,
+                onPressed: () {
+                  _showFormforgetpass();
+                },
+                child: const Text('パスワードをお忘れの方...'),
+              ),
             ]),
       ),
+    );
+  }
+
+  void _showFormverification() async {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        context: context,
+        elevation: 10,
+        builder: (_) => Column(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child:
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.vpn_key),
+                      hintText: '012345',
+                      labelText: '確認コード',
+                    ),
+                    controller: _verificationController,
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text('コード承認'),
+                  color: Colors.orangeAccent,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () => _confirmSignUp(),
+                ),
+              ),
+            ]
+        )
+    );
+  }
+
+  void _showFormforgetpass() async {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        context: context,
+        elevation: 10,
+        builder: (_) => Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.vpn_key),
+                    hintText: 'newpassword',
+                    labelText: '新パスワード',
+                  ),
+                  controller: _passwordController,
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child:
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.vpn_key),
+                      hintText: '012345',
+                      labelText: '確認コード',
+                    ),
+                    controller: _verificationController,
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text('コード承認'),
+                  color: Colors.orangeAccent,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () => _confirmReset(),
+                ),
+              ),
+            ]
+        )
     );
   }
 
@@ -325,6 +406,7 @@ class _MyAppState extends State<Login> {
           username: _mailAddressController.text,
           password: _passwordController.text,
           options: CognitoSignUpOptions(userAttributes: userAttributes));
+      _showFormverification();
       print(res.isSignUpComplete);
       _confirminfo();
     } on AuthException catch (authError) {
@@ -339,6 +421,7 @@ class _MyAppState extends State<Login> {
           confirmationCode: _verificationController.text);
       if (res.isSignUpComplete) {
         _confirmsucess();
+        _signIn();
       } else {
         _confirmerror();
       }
@@ -384,7 +467,6 @@ class _MyAppState extends State<Login> {
 
   void checkUser() async {
     var session = await authSession;
-    var user;
     var attributes = await Amplify.Auth.fetchUserAttributes();
     for (var attribute in attributes) {
       if (attribute.userAttributeKey== 'email') {
@@ -402,6 +484,18 @@ class _MyAppState extends State<Login> {
             ));
       } else {
       }
+    }
+  }
+
+  void _confirmReset() async {
+    try {
+      await Amplify.Auth.confirmPassword(
+          username: user,
+          newPassword: _passwordController.text,
+          confirmationCode: _verificationController.text
+      );
+    } on AmplifyException catch (e) {
+      print(e);
     }
   }
 
