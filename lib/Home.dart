@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify.dart';
 import 'package:fluamp/Security.dart';
 import 'package:fluamp/photosettings.dart';
+import 'package:fluamp/sqlite/Login_sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:package_info/package_info.dart';
@@ -13,12 +14,14 @@ class Home extends StatefulWidget {
 }
 
 class _FirstPageState extends State<Home> {
-  bool _isEnabled = false;
+  var _isEnabled;
   var user = "";
+  List<Map<String, dynamic>> _journals = [];
   @override
   void initState() {
     super.initState();
     checkUser();
+    _refreshJournals();
   }
 
   @override
@@ -32,6 +35,9 @@ class _FirstPageState extends State<Home> {
       ),
       body: Column(
         children: <Widget>[
+          Text(
+              'ログインステータス: ${_journals.length==0?'なし':_journals[0]['token']}'
+          ),
         ListTile(
         title: Text(
           "ユーザー:   ${user ==""? "ログインしていません": user}"
@@ -50,7 +56,7 @@ class _FirstPageState extends State<Home> {
               ),
               actions: <Widget>[
                 FlatButton(
-                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  onPressed: () => Navigator.pop(context, 'キャンセル'),
                   child: const Text('Cancel'),
                 ),
                 FlatButton(
@@ -151,8 +157,8 @@ class _FirstPageState extends State<Home> {
       setState(() {
         _isEnabled = true;
       });
+      _deleteItem;
       print("サインアウト¥n");
-      print(_isEnabled);
     } on AuthException catch (authError) {
       print("エラー");
     }
@@ -166,5 +172,15 @@ class _FirstPageState extends State<Home> {
         });
       }
     }
+  }
+  void _deleteItem() async {
+    await SQLHelper.deleteAllItem;
+  }
+
+  void _refreshJournals() async {
+    final data = await SQLHelper.getItems();
+    _journals = data;
+    print('sqliteから取得');
+    print(_journals[0]['token']);
   }
 }

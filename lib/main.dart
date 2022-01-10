@@ -5,17 +5,26 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
 import 'amplifyconfiguration.dart';
 import 'Tab.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'sqlite/Login_sql_helper.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() {
+Future<void> main() async {
   runApp(App());
 }
 
 
 class App extends StatelessWidget {
+  List<Map<String, dynamic>> _journals = [];
+  @override
+  void initState() {
+    initState();
+    _refreshJournals();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,13 +37,17 @@ class App extends StatelessWidget {
         primarySwatch: Colors.yellow,
         fontFamily: 'NotoSansCJKJp',
       ),
-      home: Login(),
-      //Login(),
+      home: (_journals.isEmpty?Login():_journals[0]['token'] == 'true'?TabPage():Login()),
       routes: <String, WidgetBuilder> {
         '/login': (BuildContext context) => new Login(),
         '/tab': (BuildContext context) => new TabPage(),
       },
     );
+  }
+  void _refreshJournals() async {
+    final data = await SQLHelper.getItems();
+      _journals = data;
+    print(_journals[0]['token']);
   }
 }
 
@@ -47,8 +60,10 @@ class _MyAppState extends State<Login> {
   final _mailAddressController = TextEditingController();
   final _passwordController = TextEditingController();
   final _verificationController = TextEditingController();
+  List<Map<String, dynamic>> _journals = [];
   LocalAuthentication _localAuth = LocalAuthentication();
   late bool state;
+  late bool loginstate;
   List<BiometricType>? _availableBiometrics;
   var user = "";
   @override
@@ -64,7 +79,8 @@ class _MyAppState extends State<Login> {
       Amplify.configure(amplifyconfig);
     });
     _authenticate();
-    checkUser();
+    _checkUser();
+    _refreshJournals();
   }
 
   @override
@@ -96,7 +112,7 @@ class _MyAppState extends State<Login> {
         ),
               Container(
               alignment: Alignment.center,
-              child: Text("未ログインの方はこちらへ"),
+              child: Text("ログイン"),
             ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -134,21 +150,6 @@ class _MyAppState extends State<Login> {
                   onPressed: () => _signIn(),
                 ),
               ),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text('新規登録申請'),
-                  color: Colors.orangeAccent,
-                  shape: StadiumBorder(),
-                  textColor: Colors.white,
-                  onPressed: () => _singUp(),
-                ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: Text("ログイン済みの方はこちらへ"),
-              ),
               RaisedButton(
                 color: Colors.red,
                 onPressed: () {
@@ -183,12 +184,25 @@ class _MyAppState extends State<Login> {
                 child: const Text('生体認証(ベータ版)'),
               ),
               RaisedButton(
+                color: Colors.orangeAccent,
+                onPressed: () {
+                  _showFormnewuser();
+                  _singUp();
+                },
+                child: const Text('新規登録'),
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Text("新規登録の方はメールアドレス、パスワードを記入して↑をタップしてください"),
+              ),
+              RaisedButton(
                 color: Colors.yellow,
                 onPressed: () {
                   _showFormforgetpass();
                 },
                 child: const Text('パスワードをお忘れの方...'),
               ),
+              Text('パスワードをお忘れの方はメールアドレスを記入して↑をタップしてください'),
             ]),
       ),
     );
@@ -283,6 +297,48 @@ class _MyAppState extends State<Login> {
                   shape: StadiumBorder(),
                   textColor: Colors.white,
                   onPressed: () => _confirmReset(),
+                ),
+              ),
+            ]
+        )
+    );
+  }
+
+  void _showFormnewuser() async {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        context: context,
+        elevation: 10,
+        builder: (_) => Column(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child:
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.vpn_key),
+                      hintText: '012345',
+                      labelText: '確認コード',
+                    ),
+                    controller: _verificationController,
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text('コード承認'),
+                  color: Colors.orangeAccent,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () => _confirmSignUp(),
                 ),
               ),
             ]
@@ -387,10 +443,10 @@ class _MyAppState extends State<Login> {
     var session = await authSession;
     if (session.isSignedIn) {
       if (result){
-        await Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => TabPage()
-            ));
+        await Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => TabPage()),
+                (_) => false);
       }else {
         _authenticaterror();
       };
@@ -435,10 +491,13 @@ class _MyAppState extends State<Login> {
       SignInResult res = await Amplify.Auth.signIn(
           username: _mailAddressController.text,
           password: _passwordController.text);
-      await Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) => TabPage()
-          ));
+      _deleteItem();
+      _addItem('true');
+      _refreshJournals();
+      await Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => TabPage()),
+              (_) => false);
     } on AuthException catch (authError) {
       _signinerror();
     }
@@ -453,10 +512,10 @@ class _MyAppState extends State<Login> {
       var session = await authSession;
       if (session.isSignedIn) {
         print("自動ログインに成功しました。");
-        await Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => TabPage()
-            ));
+        await Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => TabPage()),
+                (_) => false);
       }else {
         _authenticaterror();
       }
@@ -465,7 +524,7 @@ class _MyAppState extends State<Login> {
     }
   }
 
-  void checkUser() async {
+  void _checkUser() async {
     var session = await authSession;
     var attributes = await Amplify.Auth.fetchUserAttributes();
     for (var attribute in attributes) {
@@ -475,22 +534,12 @@ class _MyAppState extends State<Login> {
         });
       }
     }
-    print("currentuser: $user");
-    if (user != "") {
-      if (session.isSignedIn) {
-        await Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => TabPage()
-            ));
-      } else {
-      }
-    }
   }
 
   void _confirmReset() async {
     try {
       await Amplify.Auth.confirmPassword(
-          username: user,
+          username: _mailAddressController.text,
           newPassword: _passwordController.text,
           confirmationCode: _verificationController.text
       );
@@ -499,4 +548,32 @@ class _MyAppState extends State<Login> {
     }
   }
 
+  Future<void> _addItem(token) async {
+    await SQLHelper.createItem(
+        _mailAddressController.text, token);
+  }
+
+  void _deleteItem() async {
+    await SQLHelper.deleteAllItem;
+  }
+
+  void _refreshJournals() async {
+    final data = await SQLHelper.getItems();
+    _journals = data;
+    print('sqliteから取得');
+    print(_journals[0]['token']);
+    _autoLogin();
+  }
+
+  void _autoLogin() async {
+    print('autoLoginStatus Check...');
+    print('status: ${_journals[0]['token']}');
+    if (_journals[0]['token'] == 'true') {
+      print('autoLoginStatus: ${_journals[0]['token']}');
+      await Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => TabPage()),
+                  (_) => false);
+    }
+  }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'settings.dart';
 import './call.dart';
-import 'package:fluamp/sqlite/sql_helper.dart';
+import 'package:fluamp/sqlite/Channel_sql_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IndexPage extends StatefulWidget {
