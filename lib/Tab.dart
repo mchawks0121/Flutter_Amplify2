@@ -24,7 +24,6 @@ class TabPage extends StatelessWidget {
           child: TabBar(
             unselectedLabelColor: Colors.grey,
             indicatorColor: Colors.blue,
-            labelColor: Colors.black,
             tabs: _kTabs,
           ),
         ),

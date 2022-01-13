@@ -160,7 +160,10 @@ class _FirstPageState extends State<Changepass> {
           newPassword: _passwordController.text,
           confirmationCode: _verificationController.text
       );
+      Navigator.pop(context);
+      _resetsucess();
     } on AmplifyException catch (e) {
+      _resetfaild();
       print(e);
     }
   }
@@ -217,6 +220,17 @@ class _FirstPageState extends State<Changepass> {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.all(8.0),
             child: RaisedButton(
+              child: Text('コード再送信'),
+              color: Colors.orangeAccent,
+              shape: StadiumBorder(),
+              textColor: Colors.white,
+              onPressed: () => _Resendcode(),
+            ),
+          ),
+          Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.all(8.0),
+            child: RaisedButton(
               child: Text('コード承認'),
               color: Colors.orangeAccent,
               shape: StadiumBorder(),
@@ -227,6 +241,18 @@ class _FirstPageState extends State<Changepass> {
         ]
       )
     );
+  }
+
+  void _Resendcode() async {
+    try {
+      var res = await Amplify.Auth.resendUserAttributeConfirmationCode(
+        userAttributeKey: 'email',
+      );
+      var destination = res.codeDeliveryDetails.destination;
+      print('Confirmation code set to $destination');
+    } on AmplifyException catch (e) {
+      print(e.message);
+    }
   }
 
   void checkUser() async {

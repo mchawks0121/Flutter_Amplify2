@@ -133,8 +133,8 @@ class _LikeChatState extends State<LikeChat> {
                               Padding(padding: const EdgeInsets.all(10.0)),
                               Column(
                                 children: [
-                                  Text((Liked[index]['name'])),
-                                  SelectableText(Liked[index]['createdAt']),
+                                  Text((Liked[index]['name']), style: TextStyle(color: Colors.black)),
+                                  SelectableText(Liked[index]['createdAt'], style: TextStyle(color: Colors.black)),
                                 ],
                               ),
                               Padding(padding: const EdgeInsets.all(40.0)),
@@ -160,7 +160,7 @@ class _LikeChatState extends State<LikeChat> {
                         ]
                           ),
                           ListTile(
-                            title: SelectableText(Liked[index]['description'], onTap: () => _launchURL(Liked[index]['description'])),
+                            title: SelectableText(Liked[index]['description'], style: TextStyle(color: Colors.black), onTap: () => _launchURL(Liked[index]['description'])),
                             trailing: SizedBox(
                               width: 100,
                             ),

@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify.dart';
-import 'package:fluamp/photosettings.dart';
+import 'package:fluamp/sqlite/Login_sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:package_info/package_info.dart';
 
 class Developer extends StatefulWidget {
   @override
@@ -16,11 +14,16 @@ class _FirstPageState extends State<Developer> {
   late int len;
   List<dynamic> itemMap = [];
   Set<dynamic> ownerMap = {};
-
+  late AuthDevice fetch_device;
+  String Deviceinfo = "";
+  List<dynamic> Devicename = [];
+  List<Map<String, dynamic>> _journals = [];
   @override
   void initState() {
     super.initState();
     getAlluser();
+    _refreshJournals();
+    FetchDevice();
   }
 
   @override
@@ -34,14 +37,66 @@ class _FirstPageState extends State<Developer> {
       body: Column(
         children: <Widget>[
       Container(
-          child: Text('ownerMapの中身を表示中...'),
+          child: Text('登録済みユーザー表示中...'),
       ),
-      Expanded(
-      child: ListView.builder(
-      physics: AlwaysScrollableScrollPhysics(),
-        itemCount: ownerMap.length,
-        itemBuilder: (context, index)=>Text(ownerMap.elementAt(index)),
-      ),),],
+          Expanded(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: ownerMap.length,
+              itemBuilder: (context, index)=>
+                  Card(
+                      elevation: 10,
+                      color: Colors.orange[200],
+                      margin: EdgeInsets.all(15),
+                      child: Column(
+                          children: [
+                            Text(ownerMap.elementAt(index), style: TextStyle(color: Colors.black))
+                          ]
+                      )
+                  ),
+            ),),
+          Container(
+            child: Text('ログインセッション表示中...'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: _journals.length,
+              itemBuilder: (context, index)=>
+              Card(
+                  elevation: 10,
+                  color: Colors.orange[200],
+                  margin: EdgeInsets.all(15),
+                child: Column(
+                children: [
+                  Text(_journals[index]['owner'], style: TextStyle(color: Colors.black)),
+                  Text(_journals[index]['token'], style: TextStyle(color: Colors.black)),
+    ]
+    )
+              ),
+    ),
+          ),
+          Container(
+            child: Text('アカウント情報'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: 1,
+              itemBuilder: (context, index)=>
+                  Card(
+                      elevation: 100,
+                      color: Colors.orange[200],
+                      margin: EdgeInsets.all(15),
+                      child: Column(
+                          children: [
+                            Text(Deviceinfo, style: TextStyle(color: Colors.black)),
+                          ]
+                      )
+                  ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -78,6 +133,31 @@ class _FirstPageState extends State<Developer> {
       print('getAlluser: ${ownerMap}');
     } on ApiException catch (e) {
       print('Query failed: $e');
+    }
+  }
+  void _refreshJournals() async {
+    final data = await SQLHelper.getItems();
+    setState(() {
+      _journals = data;
+    });
+    print('sqliteから取得');
+    print(_journals[0]['token']);
+  }
+
+  void FetchDevice() async {
+    try {
+      /*
+      * Device: CognitoDevice{id=ap-northeast-1_68cefc69-3f7e-4d39-a66f-6df9e6f9d77d, name=Android SDK built for x86, attributes={device_status: valid, device_name: Android SDK built for x86, last_ip_used: 182.50.224.56}, createdDate=2022-01-13 12:31:52.000, lastAuthenticatedDate=2022-01-13 12:31:52.000, lastModifiedDate=2022-01-13 12:31:52.000}
+      * */
+      final devices = await Amplify.Auth.fetchDevices();
+      for (var device in devices) {
+        fetch_device = device;
+        print('Device: $fetch_device');
+        Deviceinfo = fetch_device.toString();
+        print('devicename: ${Deviceinfo}');
+      }
+    } on Exception catch (e) {
+      print('Fetch devices failed with error: $e');
     }
   }
 }

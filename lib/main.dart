@@ -1,16 +1,16 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:fluamp/PasscodeLock.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
 import 'amplifyconfiguration.dart';
 import 'Tab.dart';
-import 'package:sqflite/sqlite_api.dart';
-import 'sqlite/Login_sql_helper.dart';
+import 'sqlite/Secure_sql_helper.dart' as Securesql;
+import 'sqlite/Login_sql_helper.dart' as Loginsql;
 import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> main() async {
   runApp(App());
@@ -45,7 +45,7 @@ class App extends StatelessWidget {
     );
   }
   void _refreshJournals() async {
-    final data = await SQLHelper.getItems();
+    final data = await Loginsql.SQLHelper.getItems();
       _journals = data;
     print(_journals[0]['token']);
   }
@@ -61,6 +61,7 @@ class _MyAppState extends State<Login> {
   final _passwordController = TextEditingController();
   final _verificationController = TextEditingController();
   List<Map<String, dynamic>> _journals = [];
+  List<Map<String, dynamic>> _Lockjournals = [];
   LocalAuthentication _localAuth = LocalAuthentication();
   late bool state;
   late bool loginstate;
@@ -80,6 +81,7 @@ class _MyAppState extends State<Login> {
     });
     _authenticate();
     _checkUser();
+    _Fetchlockstatus();
     _refreshJournals();
   }
 
@@ -334,11 +336,26 @@ class _MyAppState extends State<Login> {
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
                 child: RaisedButton(
+                  child: Text('コード'),
+                  color: Colors.orangeAccent,
+                  shape: StadiumBorder(),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    _resendcode();
+                  },
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
                   child: Text('コード承認'),
                   color: Colors.orangeAccent,
                   shape: StadiumBorder(),
                   textColor: Colors.white,
-                  onPressed: () => _confirmSignUp(),
+                  onPressed: () {
+                    _confirmSignUp();Navigator.pop(context);
+                  },
                 ),
               ),
             ]
@@ -436,20 +453,21 @@ class _MyAppState extends State<Login> {
           || _availableBiometrics!.contains(BiometricType.fingerprint)) {
         result = await _localAuth.authenticateWithBiometrics(localizedReason: "認証してください");
       }
+      _addItem(1, user, 'true');
     } on PlatformException catch (e) {
-      print("生体認証結果: $e");
+      print("生体認証: $e");
     }
     print("生体認証結果: $result");
     var session = await authSession;
     if (session.isSignedIn) {
-      if (result){
-        await Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => TabPage()),
-                (_) => false);
-      }else {
+      if (result) {
+        await Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => TabPage()
+            ));
+      } else {
         _authenticaterror();
-      };
+      }
     }
   }
 
@@ -477,7 +495,6 @@ class _MyAppState extends State<Login> {
           confirmationCode: _verificationController.text);
       if (res.isSignUpComplete) {
         _confirmsucess();
-        _signIn();
       } else {
         _confirmerror();
       }
@@ -492,7 +509,7 @@ class _MyAppState extends State<Login> {
           username: _mailAddressController.text,
           password: _passwordController.text);
       _deleteItem();
-      _addItem('true');
+      _addItem(1, _mailAddressController.text, 'true');
       _refreshJournals();
       await Navigator.pushAndRemoveUntil(
           context,
@@ -511,6 +528,7 @@ class _MyAppState extends State<Login> {
     try {
       var session = await authSession;
       if (session.isSignedIn) {
+        _addItem(1, user, 'true');
         print("自動ログインに成功しました。");
         await Navigator.pushAndRemoveUntil(
             context,
@@ -525,13 +543,13 @@ class _MyAppState extends State<Login> {
   }
 
   void _checkUser() async {
-    var session = await authSession;
     var attributes = await Amplify.Auth.fetchUserAttributes();
     for (var attribute in attributes) {
       if (attribute.userAttributeKey== 'email') {
         setState(() {
           user = attribute.value;
         });
+        print('currentuser: $user');
       }
     }
   }
@@ -547,33 +565,71 @@ class _MyAppState extends State<Login> {
       print(e);
     }
   }
+  void _resendcode() async {
+    try {
+      var res = await Amplify.Auth.resendUserAttributeConfirmationCode(
+        userAttributeKey: 'email',
+      );
+      var destination = res.codeDeliveryDetails.destination;
+      print('Confirmation code set to $destination');
+    } on AmplifyException catch (e) {
+      print(e.message);
+    }
+  }
 
-  Future<void> _addItem(token) async {
-    await SQLHelper.createItem(
-        _mailAddressController.text, token);
+
+  Future<void> _addItem(id, owner, token) async {
+    await Loginsql.SQLHelper.createItem(
+        id, owner, token);
   }
 
   void _deleteItem() async {
-    await SQLHelper.deleteAllItem;
+    await Loginsql.SQLHelper.deleteAllItems;
   }
 
   void _refreshJournals() async {
-    final data = await SQLHelper.getItems();
-    _journals = data;
+    final data = await Loginsql.SQLHelper.getItems();
+    setState(() {
+      _journals = data;
+    });
     print('sqliteから取得');
     print(_journals[0]['token']);
-    _autoLogin();
+    if (_Lockjournals.length != 0) {
+      if (_Lockjournals[0]['token'] == 'true') {} else {
+        _autoLogin();
+      }
+    }else {
+      _autoLogin();
+    }
   }
 
   void _autoLogin() async {
     print('autoLoginStatus Check...');
-    print('status: ${_journals[0]['token']}');
+    print('status: ${_journals}');
     if (_journals[0]['token'] == 'true') {
       print('autoLoginStatus: ${_journals[0]['token']}');
       await Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => TabPage()),
                   (_) => false);
+    }else {
+
     }
+  }
+
+  void _Fetchlockstatus() async {
+    final data = await Securesql.SQLHelper.getlockstatus();
+    setState(() {
+      _Lockjournals = data;
+    });
+    if (_Lockjournals[0]['token'] == 'true') {
+      print('パスコードロック: ${_Lockjournals[0]['token']}');
+      await Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => PasscodeLock()),
+              (_) => false);
+    }
+    print('sqliteから取得');
+    print(_journals);
   }
 }

@@ -5,6 +5,7 @@ import 'package:fluamp/sqlite/Login_sql_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:package_info/package_info.dart';
+import 'MyAccount.dart';
 import 'Security.dart';
 import 'developer.dart';
 
@@ -26,7 +27,6 @@ class _FirstPageState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    const numItems = 20;
     return Scaffold(
       drawerEdgeDragWidth: 0,
       appBar: AppBar(
@@ -35,8 +35,28 @@ class _FirstPageState extends State<Home> {
       ),
       body: Column(
         children: <Widget>[
-          Text(
-              'ログインステータス: ${_journals.length==0?'なし':_journals[0]['token']}'
+          ListTile(
+            title: Text(
+                "アカウント"
+            ),
+            subtitle: Text("タップで表示"),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => MyAccount()
+                  ));
+            },
+          ),
+          ListTile(
+            title: Text(
+                "セッションの削除"
+            ),
+            subtitle: Text("タップで表示"),
+            onTap: () {
+              _deleteItem();
+              Navigator.pushNamedAndRemoveUntil(
+              context, "/login", (_) => false);
+            },
           ),
         ListTile(
         title: Text(
@@ -62,14 +82,6 @@ class _FirstPageState extends State<Home> {
                 FlatButton(
                   onPressed: () {
                     _signOut();
-                    Navigator
-                        .pushNamedAndRemoveUntil(
-                    context, "/login", (
-                    _
-                    )
-                    =>
-                    false
-                    );
                   }
                   ,
                   child: const Text('OK'),
@@ -113,7 +125,7 @@ class _FirstPageState extends State<Home> {
           ),
           ListTile(
             title: Text(
-                "My Photos"
+                "プロフィール"
             ),
             subtitle: Text("タップで編集"),
             onTap: () {
@@ -153,16 +165,19 @@ class _FirstPageState extends State<Home> {
 
   void _signOut() async {
     try {
+      _deleteItem();
       await Amplify.Auth.signOut();
       setState(() {
         _isEnabled = true;
       });
-      _deleteItem;
-      print("サインアウト¥n");
+      Navigator.pushNamedAndRemoveUntil(
+          context, "/login", (_) => false);
+      print("サインアウト");
     } on AuthException catch (authError) {
       print("エラー");
     }
   }
+
   void checkUser() async {
     var attributes = await Amplify.Auth.fetchUserAttributes();
     for (var attribute in attributes) {
@@ -173,13 +188,17 @@ class _FirstPageState extends State<Home> {
       }
     }
   }
+
   void _deleteItem() async {
-    await SQLHelper.deleteAllItem;
+    await SQLHelper.deleteAllItems();
+    _refreshJournals();
   }
 
   void _refreshJournals() async {
     final data = await SQLHelper.getItems();
-    _journals = data;
+    setState(() {
+      _journals = data;
+    });
     print('sqliteから取得');
     print(_journals[0]['token']);
   }

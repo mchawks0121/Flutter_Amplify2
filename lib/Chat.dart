@@ -136,8 +136,8 @@ class _MyChatState extends State<MyChat> {
                     Padding(padding: const EdgeInsets.all(10.0)),
                     Column(
                       children: [
-                    Text((itemMap[index]['name'])),
-                    SelectableText(itemMap[index]['createdAt']),
+                    Text((itemMap[index]['name']), style: TextStyle(color: Colors.black)),
+                    SelectableText(itemMap[index]['createdAt'], style: TextStyle(color: Colors.black)),
         ],
                     ),
                   Padding(padding: const EdgeInsets.all(40.0)),
@@ -179,7 +179,7 @@ class _MyChatState extends State<MyChat> {
                 ],
               ),
               ListTile(
-              title: SelectableText(itemMap[index]['description'], onTap: () => _launchURL(itemMap[index]['description'])),
+              title: SelectableText(itemMap[index]['description'], style: TextStyle(color: Colors.black), onTap: () => _launchURL(itemMap[index]['description'])),
               trailing: SizedBox(
                 width: 100,
               ),
