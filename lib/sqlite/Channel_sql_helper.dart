@@ -7,9 +7,9 @@ class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE items(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        channel TEXT,
-        appid TEXT,
-        token TEXT,
+        meetingid TEXT,
+        passcode TEXT,
+        name TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
@@ -20,7 +20,7 @@ class SQLHelper {
 
   static Future<sql.Database> db() async {
     return sql.openDatabase(
-      'kindacode.db',
+      'zoominfo.db',
       version: 1,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
@@ -29,10 +29,10 @@ class SQLHelper {
   }
 
   // Create new item (journal)
-  static Future<int> createItem(String channel, String? appid, String? token) async {
+  static Future<int> createItem(String meetingid, String? passcode, String? name) async {
     final db = await SQLHelper.db();
 
-    final data = {'channel': channel, 'appid': appid, 'token': token};
+    final data = {'meetingid': meetingid, 'passcode': passcode, 'name': name};
     final id = await db.insert('items', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
@@ -53,12 +53,12 @@ class SQLHelper {
 
   // Update an item by id
   static Future<int> updateItem(
-      int id, String? channel, String? appid, String? token) async {
+      int id, String? channel, String? appid, String? token, String? name) async {
     final db = await SQLHelper.db();
     final data = {
-      'channel': channel,
-      'appid': appid,
-      'token': token,
+      'meetingid': channel,
+      'passscode': appid,
+      'name': name,
       'createdAt': DateTime.now().toLocal().toString()
     };
 

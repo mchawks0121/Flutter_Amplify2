@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
     "auth": {
-        "fluamp71057749": {
+        "fluampe7edf03e": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
             "UserPoolId": "string",
@@ -11,7 +11,7 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "function": {
-        "S3Trigger9eb54df1": {
+        "S3Trigger8589d29a": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
@@ -19,7 +19,7 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "storage": {
-        "s367dd00fc": {
+        "s3dba1312b": {
             "BucketName": "string",
             "Region": "string"
         }

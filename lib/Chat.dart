@@ -69,7 +69,7 @@ class _MyChatState extends State<MyChat> {
       drawerEdgeDragWidth: 0,
       appBar: AppBar(
           automaticallyImplyLeading: false,
-        title: Text("掲示板"),
+        title: Text("ボード"),
           actions: [
       IconButton(
       icon: Icon(Icons.grade),
@@ -269,23 +269,6 @@ class _MyChatState extends State<MyChat> {
     }
   }
 
-  void _configureAmplify() async {
-    try {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
-        AmplifyAPI apiPlugin = AmplifyAPI();
-        AmplifyStorageS3 storagePlugin = AmplifyStorageS3();
-        Amplify.addPlugins([authPlugin]);
-        Amplify.addPlugins([apiPlugin]);
-        Amplify.addPlugins([storagePlugin]);
-        Amplify.configure(amplifyconfig);
-      });
-      await Amplify.configure(amplifyconfig);
-    } on AmplifyAlreadyConfiguredException {
-      print("初期化失敗");
-    }
-  }
-
   void _showForm(id) async {
     if (id != null) {
       final existingJournal =
@@ -364,6 +347,12 @@ class _MyChatState extends State<MyChat> {
     for (Match m in urlMatches) {
       return(m.group(0));
     }
+  }
+
+  String? getSplittedZoomURL(String message) {
+    final id = message.split('id: ');
+    final pass = message.split('pass: ');
+    return '$id + ," + $pass';
   }
 
   _launchURL(uri) async {

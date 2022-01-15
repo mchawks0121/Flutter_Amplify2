@@ -113,7 +113,7 @@ class _MyAppState extends State<PasscodeLock> {
                 ),
           );
         },
-        child: const Text('ログイン済みの方'),
+        child: const Text('パスコードをお忘れの方...'),
       ),
             ]
         ),

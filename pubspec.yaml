@@ -58,6 +58,7 @@ dependencies:
   shared_preferences: ^2.0.11
   flutter_local_notifications: ^9.1.5
   share: ^2.0.4
+  flutter_zoom_sdk: ^1.0.0+5
 
 dev_dependencies:
   flutter_test:

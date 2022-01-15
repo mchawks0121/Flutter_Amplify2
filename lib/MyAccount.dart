@@ -86,7 +86,7 @@ class _FirstPageState extends State<MyAccount> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("最終認証日時", style: TextStyle(color: Colors.black)),
+              Text("アカウント作成日時", style: TextStyle(color: Colors.black)),
               Text(Lastdate.length==0?'取得できません':Lastdate[0], style: TextStyle(color: Colors.black))
             ]
         ),

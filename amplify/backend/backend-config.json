@@ -1,6 +1,6 @@
 {
   "auth": {
-    "fluamp71057749": {
+    "fluampe7edf03e": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -26,20 +26,20 @@
     }
   },
   "function": {
-    "S3Trigger9eb54df1": {
+    "S3Trigger8589d29a": {
       "service": "Lambda",
       "providerPlugin": "awscloudformation",
       "build": true
     }
   },
   "storage": {
-    "s367dd00fc": {
+    "s3dba1312b": {
       "service": "S3",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "S3Trigger9eb54df1",
+          "resourceName": "S3Trigger8589d29a",
           "attributes": [
             "Name",
             "Arn",

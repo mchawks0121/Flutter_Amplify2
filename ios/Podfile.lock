@@ -78,6 +78,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
+  - flutter_zoom_sdk (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -113,6 +115,7 @@ DEPENDENCIES:
   - amplify_storage_s3 (from `.symlinks/plugins/amplify_storage_s3/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - flutter_zoom_sdk (from `.symlinks/plugins/flutter_zoom_sdk/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
@@ -160,6 +163,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  flutter_zoom_sdk:
+    :path: ".symlinks/plugins/flutter_zoom_sdk/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   local_auth:
@@ -201,6 +206,7 @@ SPEC CHECKSUMS:
   AWSS3: aafe113c5fb59f9c82bd3ba26c2c3698e23d5a36
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
+  flutter_zoom_sdk: 62caf74a6f8822790a98b2251bf7f4a7e2590057
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   local_auth: ef62030a2731330b95df7ef1331bd15f6a64b8a6
@@ -214,6 +220,6 @@ SPEC CHECKSUMS:
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
 
-PODFILE CHECKSUM: 57c8aed26fba39d3ec9424816221f294a07c58eb
+PODFILE CHECKSUM: 60a0409a0029777af2715afc890c23a5ab6fceb7
 
 COCOAPODS: 1.11.2

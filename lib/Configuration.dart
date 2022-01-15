@@ -9,12 +9,12 @@ import 'MyAccount.dart';
 import 'Security.dart';
 import 'developer.dart';
 
-class Home extends StatefulWidget {
+class Configuration extends StatefulWidget {
   @override
   _FirstPageState createState() => _FirstPageState();
 }
 
-class _FirstPageState extends State<Home> {
+class _FirstPageState extends State<Configuration> {
   var _isEnabled;
   var user = "";
   List<Map<String, dynamic>> _journals = [];
@@ -30,7 +30,7 @@ class _FirstPageState extends State<Home> {
     return Scaffold(
       drawerEdgeDragWidth: 0,
       appBar: AppBar(
-        title: Text("設定"),
+        title: Text("セットアップ"),
         automaticallyImplyLeading: false,
       ),
       body: Column(

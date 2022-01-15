@@ -1,33 +1,29 @@
 import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_sdk/zoom_options.dart';
+import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'settings.dart';
-import './call.dart';
 import 'package:fluamp/sqlite/Channel_sql_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class IndexPage extends StatefulWidget {
+class Zoomindex extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => IndexState();
 }
 
-class IndexState extends State<IndexPage> {
-  final _channelController = TextEditingController();
-  final _appidController = TextEditingController();
-  final _tokenController = TextEditingController();
+class IndexState extends State<Zoomindex> {
+  final nameController = TextEditingController();
+  final meetingIdController = TextEditingController();
+  final meetingPasswordController = TextEditingController();
   bool _validateError = false;
-  ClientRole? _role = ClientRole.Broadcaster;
-  late bool _switchvideo = true;
   List<Map<String, dynamic>> _journals = []/*..length=3*/;
-  bool _isLoading = true;
-  // This function is used to fetch all data from the database
+
   void _refreshJournals() async {
     final data = await SQLHelper.getItems();
     print(data);
     setState(() {
       _journals = data;
-      _isLoading = false;
     });
   }
 
@@ -39,7 +35,6 @@ class IndexState extends State<IndexPage> {
 
   @override
   void dispose() {
-    _channelController.dispose();
     super.dispose();
   }
 
@@ -48,7 +43,7 @@ class IndexState extends State<IndexPage> {
     return Scaffold(
       drawerEdgeDragWidth: 0,
       appBar: AppBar(
-      title: Text("ビデオ通話"),
+      title: Text("ミーティング"),
         automaticallyImplyLeading: false,
     ),
       resizeToAvoidBottomInset: false,
@@ -60,17 +55,17 @@ class IndexState extends State<IndexPage> {
             children: <Widget>[
               Container(
                 width: double.infinity,
-              child: GestureDetector(
-                onTap: () {
-                  _launchURL("https://x.gd/EWvA9"); //agora.io短縮URL
-                },
-                child: Text("Agora.io",
-                  style: TextStyle(color: Colors.red,
+                child: GestureDetector(
+                  onTap: () {
+                    _launchURL("https://marketplace.zoom.us/"); //agora.io短縮URL
+                  },
+                  child: Text("zoom Cloud meetings",
+                    style: TextStyle(color: Colors.red,
                       decoration: TextDecoration.underline,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                textAlign: TextAlign.left,
-                  ),
-              ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -79,15 +74,15 @@ class IndexState extends State<IndexPage> {
                 children: <Widget>[
                   Expanded(
                       child: TextFormField(
-                        controller: _channelController,
+                        controller: meetingIdController,
                         decoration: InputDecoration(
                           errorText:
-                          _validateError ? 'チャンネルが存在しません' : null,
+                          _validateError ? 'idが存在しません' : null,
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(width: 1),
                           ),
                           icon: Icon(Icons.account_balance),
-                          hintText: 'チャンネル名',
+                          hintText: 'ミーティングID',
                         ),
                       )),
                 ],
@@ -95,57 +90,25 @@ class IndexState extends State<IndexPage> {
               Column(
                 children: [
                   TextFormField(
-                    controller: _appidController,
-                    decoration: InputDecoration(
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1),
-                      ),
-                      hintText: 'AppId',
-                        icon: Icon(Icons.perm_identity),
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _tokenController,
+                    controller: meetingPasswordController,
                     decoration: InputDecoration(
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(width: 1),
                       ),
                       icon: Icon(Icons.vpn_key),
-                      hintText: 'Token',
+                      hintText: 'パスコード',
                     ),
                   ),
-                  const Text("ビデオ"),
-                  Switch(
-                      value: _switchvideo,
-                      onChanged: (bool value) {
-                        print('video: ${_switchvideo}');
-                        setState(() => _switchvideo=value);
-                      },
-                  ),
-                  ListTile(
-                    title: Text("ビデオ通話"),
-                    leading: Radio(
-                      value: ClientRole.Broadcaster,
-                      groupValue: _role,
-                      onChanged: (ClientRole? value) {
-                        setState(() {
-                          _role = value;
-                        });
-                      },
+                  TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                      icon: Icon(Icons.person_pin_circle),
+                      hintText: '名前',
                     ),
                   ),
-                  /*ListTile(
-                    title: Text("単方向ビデオ通話"),
-                    leading: Radio(
-                      value: ClientRole.Audience,
-                      groupValue: _role,
-                      onChanged: (ClientRole? value) {
-                        setState(() {
-                          _role = value;
-                        });
-                      },
-                    ),
-                  )*/
                 ],
               ),
               Padding(
@@ -154,20 +117,13 @@ class IndexState extends State<IndexPage> {
                   children: <Widget>[
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: onJoin,
-                        child: Text('入室!'),
+                        onPressed: () {
+                          joinMeeting();
+                          _addItem();
+                        },
+                        child: Text('Zoomミーティングに参加'),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
-                            foregroundColor: MaterialStateProperty.all(Colors.white)
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => _deleteAllItem(),
-                        child: Text('履歴削除'),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.redAccent),
                             foregroundColor: MaterialStateProperty.all(Colors.white)
                         ),
                       ),
@@ -180,7 +136,7 @@ class IndexState extends State<IndexPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.history),
+          child: Icon(Icons.history, semanticLabel: '履歴'),
           onPressed: () => _showForm(null)
       ),
     );
@@ -200,8 +156,8 @@ class IndexState extends State<IndexPage> {
             color: Colors.orange[200],
             margin: EdgeInsets.all(15),
             child: ListTile(
-                title: SelectableText('${_journals[index]['channel']}'),
-                subtitle: SelectableText('${_journals[index]['createdAt']}'),
+                title: SelectableText('${_journals[index]['meetingid']}', style: TextStyle(color: Colors.black)),
+                subtitle: SelectableText('${_journals[index]['passcode']}', style: TextStyle(color: Colors.black)),
                 trailing: SizedBox(
                   width: 100,
                   child: Row(
@@ -222,32 +178,6 @@ class IndexState extends State<IndexPage> {
     );
   }
 
-  Future<void> onJoin() async {
-    _addItem();
-    // update input validation
-    setState(() {
-      _channelController.text.isEmpty
-          ? _validateError = true
-          : _validateError = false;
-      APP_ID = _appidController.text;
-      Token = _tokenController.text;
-    });
-    if (_channelController.text.isNotEmpty) {
-      await _handleCameraAndMic(Permission.camera);
-      await _handleCameraAndMic(Permission.microphone);
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallPage(
-            channelName: _channelController.text,
-            video: _switchvideo,
-            role: _role,
-          ),
-        ),
-      );
-    }
-  }
-
   Future<void> _handleCameraAndMic(Permission permission) async {
     final status = await permission.request();
     print(status);
@@ -256,20 +186,14 @@ class IndexState extends State<IndexPage> {
   // Insert a new journal to the database
   Future<void> _addItem() async {
     await SQLHelper.createItem(
-        _channelController.text, _appidController.text, _tokenController.text);
-    _refreshJournals();
-  }
-
-  // Update an existing journal
-  Future<void> _updateItem(int id) async {
-    await SQLHelper.updateItem(
-        id, _channelController.text, _appidController.text, _tokenController.text);
+        meetingIdController.text, meetingPasswordController.text, nameController.text);
     _refreshJournals();
   }
 
   // Delete an item
   void _deleteItem(int id) async {
     await SQLHelper.deleteItem(id);
+    Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('履歴を削除しました!'),
     ));
@@ -290,10 +214,11 @@ class IndexState extends State<IndexPage> {
 
   void _Inputitem(item) async {
     setState(() {
-      _channelController.text = item['channel'];
-      _appidController.text = item['appid'];
-      _tokenController.text = item['token'];
+      meetingIdController.text = item['meetingid'];
+      meetingPasswordController.text = item['passcode'];
+      nameController.text = item['name'];
     });
+    Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('履歴を反映しました。'),
     ));
@@ -309,5 +234,65 @@ class IndexState extends State<IndexPage> {
       throw 'Could not launch $url';
     }
   }
-  
+
+  void joinMeeting() async {
+    bool _isMeetingEnded(String status) {
+      var result = false;
+      return result = status == "MEETING_STATUS_DISCONNECTING" || status == "MEETING_STATUS_FAILED";
+    }
+    if(meetingIdController.text.isNotEmpty && meetingPasswordController.text.isNotEmpty){
+      ZoomOptions zoomOptions = new ZoomOptions(
+        domain: "zoom.us",
+        appKey: "58SMuLgTkyUGTwdzVjhmTlKwDCz4RbZ8zX0M", //API KEY FROM ZOOM
+        appSecret: "miSXIG3EeuzgJGFg5qp4DVy4dplrQYCdDudP", //API SECRET FROM ZOOM
+      );
+      var meetingOptions = new ZoomMeetingOptions(
+          userId: nameController.text, //pass username for join meeting only --- Any name eg:- EVILRATT.
+          meetingId: meetingIdController.text, //pass meeting id for join meeting only
+          meetingPassword: meetingPasswordController.text, //pass meeting password for join meeting only
+          disableDialIn: "true",
+          disableDrive: "true",
+          disableInvite: "true",
+          disableShare: "true",
+          disableTitlebar: "false",
+          viewOptions: "true",
+          noAudio: "false",
+          noDisconnectAudio: "false"
+      );
+
+      var zoom = ZoomView();
+      zoom.initZoom(zoomOptions).then((results) {
+        if(results[0] == 0) {
+          zoom.onMeetingStatus().listen((status) {
+            print("[Meeting Status Stream] : " + status[0] + " - " + status[1]);
+            if (_isMeetingEnded(status[0])) {
+              print("[Meeting Status] :- Ended");
+            }
+          });
+          print("listen on event channel");
+          zoom.joinMeeting(meetingOptions).then((joinMeetingResult) {
+            var timer = Timer.periodic(new Duration(seconds: 2), (timer) {
+              zoom.meetingStatus(meetingOptions.meetingId!)
+                  .then((status) {
+                print("[Meeting Status Polling] : " + status[0] + " - " + status[1]);
+              });
+            });
+          });
+        }
+      }).catchError((error) {
+        print("[Error Generated] : " + error);
+      });
+    }else{
+      if(meetingIdController.text.isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Enter a valid meeting id to continue."),
+        ));
+      }
+      else if(meetingPasswordController.text.isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Enter a meeting password to start."),
+        ));
+      }
+    }
+  }
 }

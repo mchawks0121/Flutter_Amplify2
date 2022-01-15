@@ -27,7 +27,7 @@ class _FirstPageState extends State<ChatSettings> {
       ),
       body: Column(
         children: <Widget>[
-
+          Text('サービスアウト'),
         ],
       ),
     );

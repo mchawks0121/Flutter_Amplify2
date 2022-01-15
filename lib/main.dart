@@ -176,14 +176,14 @@ class _MyAppState extends State<Login> {
                         ),
                   );
                 },
-                child: const Text('ログイン済みの方'),
+                child: const Text('ログイン済みの方', style: TextStyle(color: Colors.black)),
               ),
               RaisedButton(
                 color: Colors.blue,
                 onPressed: () {
                   _authenticate();
                 },
-                child: const Text('生体認証(ベータ版)'),
+                child: const Text('生体認証(ベータ版)', style: TextStyle(color: Colors.black)),
               ),
               RaisedButton(
                 color: Colors.orangeAccent,
@@ -191,7 +191,7 @@ class _MyAppState extends State<Login> {
                   _showFormnewuser();
                   _singUp();
                 },
-                child: const Text('新規登録'),
+                child: const Text('新規登録', style: TextStyle(color: Colors.black)),
               ),
               Container(
                 alignment: Alignment.center,
@@ -202,7 +202,7 @@ class _MyAppState extends State<Login> {
                 onPressed: () {
                   _showFormforgetpass();
                 },
-                child: const Text('パスワードをお忘れの方...'),
+                child: const Text('パスワードをお忘れの方...', style: TextStyle(color: Colors.black)),
               ),
               Text('パスワードをお忘れの方はメールアドレスを記入して↑をタップしてください'),
             ]),
@@ -240,7 +240,7 @@ class _MyAppState extends State<Login> {
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
                 child: RaisedButton(
-                  child: Text('コード承認'),
+                  child: Text('コード承認', style: TextStyle(color: Colors.black)),
                   color: Colors.orangeAccent,
                   shape: StadiumBorder(),
                   textColor: Colors.white,
@@ -294,7 +294,7 @@ class _MyAppState extends State<Login> {
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
                 child: RaisedButton(
-                  child: Text('コード承認'),
+                  child: Text('コード承認', style: TextStyle(color: Colors.black)),
                   color: Colors.orangeAccent,
                   shape: StadiumBorder(),
                   textColor: Colors.white,
@@ -336,7 +336,7 @@ class _MyAppState extends State<Login> {
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
                 child: RaisedButton(
-                  child: Text('コード'),
+                  child: Text('コード再送信', style: TextStyle(color: Colors.black)),
                   color: Colors.orangeAccent,
                   shape: StadiumBorder(),
                   textColor: Colors.white,
@@ -349,7 +349,7 @@ class _MyAppState extends State<Login> {
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
                 child: RaisedButton(
-                  child: Text('コード承認'),
+                  child: Text('コード承認', style: TextStyle(color: Colors.black)),
                   color: Colors.orangeAccent,
                   shape: StadiumBorder(),
                   textColor: Colors.white,
@@ -494,6 +494,7 @@ class _MyAppState extends State<Login> {
           username: _mailAddressController.text,
           confirmationCode: _verificationController.text);
       if (res.isSignUpComplete) {
+        Navigator.pop(context);
         _confirmsucess();
       } else {
         _confirmerror();
