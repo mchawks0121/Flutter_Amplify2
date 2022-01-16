@@ -6,10 +6,12 @@ import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:fluamp/LikeChat.dart';
+import 'package:fluamp/video/Zoomindex.dart';
+import 'package:fluamp/video/Zoomindex_modified.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:share/share.dart';
-import 'ChatSettings.dart';
-import 'amplifyconfiguration.dart';
+import 'sqlite/MeetingId_sql_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:simple_url_preview/simple_url_preview.dart';
@@ -30,6 +32,8 @@ class _MyChatState extends State<MyChat> {
   late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   var itemList = [];
   var user;
+  var meetingurl;
+  var meetingpass;
   late Map<String, String> _getUrlResult={};
   late int len;
   late bool initialcounter = true;
@@ -57,6 +61,8 @@ class _MyChatState extends State<MyChat> {
     getAlluser();
     _currentuser();
     getUrlall();
+    _loadData();
+    deleteMeetingid();
   }
 
   @override
@@ -203,6 +209,26 @@ class _MyChatState extends State<MyChat> {
                 ),
                 onTap:()=> _launchURL(itemMap[index]['description']),
               ),
+              (_launchZoom(itemMap[index]['description']) == 'true')?
+              IconButton(
+                  icon: Icon(Icons.videocam),
+                  iconSize: 20,
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Zoomindex_modified()),
+                    );
+                    final pass = getSplittedZoomPass(itemMap[index]['description']);
+                    final copypass = ClipboardData(text: pass);
+                    Clipboard.setData(copypass);
+                    _confirminfo();
+                  }
+              ):IconButton(
+                icon: Icon(Icons.videocam_off),
+                iconSize: 0,
+                onPressed:()=>{
+                },
+              ),
         ]),
           ),
       ),
@@ -339,6 +365,15 @@ class _MyChatState extends State<MyChat> {
     );
   }
 
+  void _confirminfo() async {
+    print("Zoom meetingの情報をコピーしました");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Zoom meetingsの情報をコピーしました'),
+      ),
+    );
+  }
+
   String? getSplittedURL(String message) {
     final RegExp urlRegExp = RegExp(
         r'((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?');
@@ -348,11 +383,49 @@ class _MyChatState extends State<MyChat> {
       return(m.group(0));
     }
   }
-
+//(?:ミーティングID: [0-9]{10} |パスコード: [!-~]{6})
   String? getSplittedZoomURL(String message) {
-    final id = message.split('id: ');
-    final pass = message.split('pass: ');
-    return '$id + ," + $pass';
+    final RegExp urlRegExp = RegExp(
+        '(?:ミーティングID: [0-9]{10})');
+    final Iterable<RegExpMatch> urlMatches =
+    urlRegExp.allMatches(message);
+    for (Match m in urlMatches) {
+      return(m.group(0));
+    }
+  }
+
+  String? getSplittedZoomPass(String message) {
+    final RegExp urlRegExp = RegExp(
+        '(?:パスコード: [!-~]{6})');
+    final Iterable<RegExpMatch> urlMatches =
+    urlRegExp.allMatches(message);
+    for (Match m in urlMatches) {
+      final pass = m.group(0);
+      final passchange = pass!.split(':');
+      meetingpass = passchange[1];
+      return passchange[1];
+    }
+  }
+
+  String? _launchZoom(meetingid) {
+    meetingurl = getSplittedZoomURL(meetingid);
+    if (meetingurl == null) {
+      return 'false';
+    }else {
+      final id = meetingurl.split('ミーティングID:');
+      setZoomid(id[1]);
+      print("Zoom meetingid: ${id[1]}");
+      return 'true';
+    }
+  }
+
+  Future<void> setZoomid(id) async {
+    print('setZooomid: ${id}, ${meetingpass}');
+    SQLHelper.createmeetingid(1, id, meetingpass==null?'':meetingpass);
+  }
+
+  void deleteMeetingid() async {
+    await SQLHelper.deleteAllmeetingid();
   }
 
   _launchURL(uri) async {

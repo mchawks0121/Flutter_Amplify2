@@ -59,6 +59,7 @@ dependencies:
   flutter_local_notifications: ^9.1.5
   share: ^2.0.4
   flutter_zoom_sdk: ^1.0.0+5
+  passcode_screen: ^2.0.1
 
 dev_dependencies:
   flutter_test:

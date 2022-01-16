@@ -39,37 +39,9 @@ class _LikeChatState extends State<LikeChat> {
     _currentuser();
     getUrlall();
     _fetch();
+    LoadData();
   }
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: this._scaffoldKey,
-      drawerEdgeDragWidth: 0,
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text("お気に入り"),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () =>
-              {
-                /*Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => LikeChat()
-                    ))*/
-              },
-            ),
-          ]),
-      body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-            ),
-          ]
-      ),);
-  }
-*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,9 +73,7 @@ class _LikeChatState extends State<LikeChat> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   print('Loading');
-                  getLiked();
-                  getUrlall();
-                  _fetch();
+                  LoadData();
                 },
                 child: ListView.builder(
                   physics: AlwaysScrollableScrollPhysics(),
@@ -192,6 +162,12 @@ class _LikeChatState extends State<LikeChat> {
           ]
       ),
     );
+  }
+
+  void LoadData() async {
+    getLiked();
+    getUrlall();
+    _fetch();
   }
 
   void getLiked() async {

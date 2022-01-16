@@ -1,9 +1,9 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify.dart';
-import 'package:fluamp/PasscodeLock.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
+import 'PasscodeLogin.dart';
 import 'amplifyconfiguration.dart';
 import 'Tab.dart';
 import 'sqlite/Secure_sql_helper.dart' as Securesql;
@@ -15,7 +15,6 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 Future<void> main() async {
   runApp(App());
 }
-
 
 class App extends StatelessWidget {
   List<Map<String, dynamic>> _journals = [];
@@ -210,48 +209,6 @@ class _MyAppState extends State<Login> {
     );
   }
 
-  void _showFormverification() async {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-        ),
-        context: context,
-        elevation: 10,
-        builder: (_) => Column(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child:
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      icon: Icon(Icons.vpn_key),
-                      hintText: '012345',
-                      labelText: '確認コード',
-                    ),
-                    controller: _verificationController,
-                  ),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text('コード承認', style: TextStyle(color: Colors.black)),
-                  color: Colors.orangeAccent,
-                  shape: StadiumBorder(),
-                  textColor: Colors.white,
-                  onPressed: () => _confirmSignUp(),
-                ),
-              ),
-            ]
-        )
-    );
-  }
-
   void _showFormforgetpass() async {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -354,7 +311,7 @@ class _MyAppState extends State<Login> {
                   shape: StadiumBorder(),
                   textColor: Colors.white,
                   onPressed: () {
-                    _confirmSignUp();Navigator.pop(context);
+                    _confirmSignUp();
                   },
                 ),
               ),
@@ -480,7 +437,6 @@ class _MyAppState extends State<Login> {
           username: _mailAddressController.text,
           password: _passwordController.text,
           options: CognitoSignUpOptions(userAttributes: userAttributes));
-      _showFormverification();
       print(res.isSignUpComplete);
       _confirminfo();
     } on AuthException catch (authError) {
@@ -627,7 +583,7 @@ class _MyAppState extends State<Login> {
       print('パスコードロック: ${_Lockjournals[0]['token']}');
       await Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => PasscodeLock()),
+          MaterialPageRoute(builder: (context) => PasscodeLogin()),
               (_) => false);
     }
     print('sqliteから取得');

@@ -7,13 +7,14 @@ import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fluamp/sqlite/Channel_sql_helper.dart' as Channel;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:fluamp/sqlite/MeetingId_sql_helper.dart' as Meeting;
 
-class Zoomindex extends StatefulWidget {
+class Zoomindex_modified extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => IndexState();
 }
 
-class IndexState extends State<Zoomindex> {
+class IndexState extends State<Zoomindex_modified> {
   final nameController = TextEditingController();
   late  TextEditingController meetingIdController = TextEditingController();
   late  TextEditingController meetingPasswordController = TextEditingController();
@@ -29,11 +30,16 @@ class IndexState extends State<Zoomindex> {
     });
   }
 
-    @override
-    void initState() {
-      super.initState();
-        _refreshJournals();
-    }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      getMeetingid();
+      _refreshJournals();
+      meetingIdController.text =  _idjournals.length == 0?"":_idjournals[0]['meetingid'];
+      meetingPasswordController.text =  _idjournals.length == 0?"":_idjournals[0]['pass'];
+    });
+  }
 
   @override
   void dispose() {
@@ -45,9 +51,9 @@ class IndexState extends State<Zoomindex> {
     return Scaffold(
       drawerEdgeDragWidth: 0,
       appBar: AppBar(
-      title: Text("ミーティング"),
+        title: Text("ミーティング"),
         automaticallyImplyLeading: false,
-    ),
+      ),
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
@@ -93,16 +99,16 @@ class IndexState extends State<Zoomindex> {
               ),
               Column(
                 children: [
-              TextFormField(
-                controller: meetingPasswordController,
-                decoration: InputDecoration(
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(width: 1),
+                  TextFormField(
+                    controller: meetingPasswordController,
+                    decoration: InputDecoration(
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1),
+                      ),
+                      icon: Icon(Icons.vpn_key),
+                      hintText: 'パスコード',
+                    ),
                   ),
-                  icon: Icon(Icons.vpn_key),
-                  hintText: 'パスコード',
-                ),
-              ),
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
@@ -124,6 +130,7 @@ class IndexState extends State<Zoomindex> {
                         onPressed: () {
                           joinMeeting();
                           _addItem();
+                          deleteMeetingid();
                         },
                         child: Text('Zoomミーティングに参加'),
                         style: ButtonStyle(
@@ -148,37 +155,37 @@ class IndexState extends State<Zoomindex> {
 
   void _showForm(id) async {
     showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
+      context: context,
+      elevation: 10,
+      builder: (_) => ListView.builder(
+        itemCount: _journals.length,
+        itemBuilder: (context, index) => Card(
+          elevation: 30,
+          color: Colors.orange[200],
+          margin: EdgeInsets.all(15),
+          child: ListTile(
+              title: SelectableText('${_journals[index]['meetingid']}', style: TextStyle(color: Colors.black)),
+              subtitle: SelectableText('${_journals[index]['passcode']}', style: TextStyle(color: Colors.black)),
+              trailing: SizedBox(
+                width: 100,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () => _Inputitem(_journals[index]),
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _deleteItem(_journals[index]['id'])
+                    ),
+                  ],
+                ),
+              )),
         ),
-        context: context,
-        elevation: 10,
-        builder: (_) => ListView.builder(
-          itemCount: _journals.length,
-          itemBuilder: (context, index) => Card(
-            elevation: 30,
-            color: Colors.orange[200],
-            margin: EdgeInsets.all(15),
-            child: ListTile(
-                title: SelectableText('${_journals[index]['meetingid']}', style: TextStyle(color: Colors.black)),
-                subtitle: SelectableText('${_journals[index]['passcode']}', style: TextStyle(color: Colors.black)),
-                trailing: SizedBox(
-                  width: 100,
-                  child: Row(
-                    children: [
-                      IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () => _Inputitem(_journals[index]),
-                      ),
-                      IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => _deleteItem(_journals[index]['id'])
-                      ),
-                    ],
-                  ),
-                )),
-          ),
-        ),
+      ),
     );
   }
 
@@ -214,6 +221,21 @@ class IndexState extends State<Zoomindex> {
     setState(() {
       _refreshJournals();
     });
+  }
+
+  void getMeetingid() async {
+    final data = await Meeting.SQLHelper.getmeetingid();
+    setState(() {
+      _idjournals = data as List<Map<String, dynamic>>;
+      meetingIdController.text =  _idjournals.length == 0?"":_idjournals[0]['meetingid'];
+      meetingPasswordController.text =  _idjournals.length == 0?"":_idjournals[0]['pass'];
+    });
+    print('meetinginfo: $_idjournals');
+    print('meetinginfolength: ${_idjournals.length}');
+  }
+
+  void deleteMeetingid() async {
+    await Meeting.SQLHelper.deleteAllmeetingid();
   }
 
   void _Inputitem(item) async {
