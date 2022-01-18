@@ -262,10 +262,8 @@ class _MyAppState extends State<PasscodeLogin> {
     var session = await authSession;
     if (session.isSignedIn) {
       if (result) {
-        await Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => TabPage()
-            ));
+        await Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => TabPage()), (_) => false);
       } else {
         _authenticaterror();
       }

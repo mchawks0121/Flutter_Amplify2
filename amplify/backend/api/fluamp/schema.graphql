@@ -9,6 +9,18 @@ type Todo @model
   description: String
   owner: String
   count: Int!
+  good: [String]
+  thread: [Thread]
+  createdAt: String
+  updateAt: String
+}
+
+type Thread @model
+{
+  subject: String
+  owner: String
+  count: Int!
+  comment: String
   createdAt: String
 }
 

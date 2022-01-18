@@ -1,16 +1,17 @@
 import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify.dart';
-import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'PasscodeLogin.dart';
-import 'amplifyconfiguration.dart';
-import 'Tab.dart';
-import 'sqlite/Secure_sql_helper.dart' as Securesql;
-import 'sqlite/Login_sql_helper.dart' as Loginsql;
 import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+
+import 'PasscodeLogin.dart';
+import 'Tab.dart';
+import 'amplifyconfiguration.dart';
+import 'sqlite/Login_sql_helper.dart' as Loginsql;
+import 'sqlite/Secure_sql_helper.dart' as Securesql;
 
 Future<void> main() async {
   runApp(App());
@@ -18,6 +19,7 @@ Future<void> main() async {
 
 class App extends StatelessWidget {
   List<Map<String, dynamic>> _journals = [];
+
   @override
   void initState() {
     initState();
@@ -36,16 +38,21 @@ class App extends StatelessWidget {
         primarySwatch: Colors.yellow,
         fontFamily: 'NotoSansCJKJp',
       ),
-      home: (_journals.isEmpty?Login():_journals[0]['token'] == 'true'?TabPage():Login()),
-      routes: <String, WidgetBuilder> {
+      home: (_journals.isEmpty
+          ? Login()
+          : _journals[0]['token'] == 'true'
+              ? TabPage()
+              : Login()),
+      routes: <String, WidgetBuilder>{
         '/login': (BuildContext context) => new Login(),
         '/tab': (BuildContext context) => new TabPage(),
       },
     );
   }
+
   void _refreshJournals() async {
     final data = await Loginsql.SQLHelper.getItems();
-      _journals = data;
+    _journals = data;
     print(_journals[0]['token']);
   }
 }
@@ -66,6 +73,7 @@ class _MyAppState extends State<Login> {
   late bool loginstate;
   List<BiometricType>? _availableBiometrics;
   var user = "";
+
   @override
   void initState() {
     super.initState();
@@ -92,119 +100,122 @@ class _MyAppState extends State<Login> {
         title: const Text('ログイン', style: TextStyle(fontFamily: 'Raleway')),
       ),
       body: Center(
-        child: ListView(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                child: GestureDetector(
-                  onTap: () {
-                    _launchURL("https://aws.amazon.com/jp/cognito/"); //amplifyのURL
-                  },
-                  child: Text("Amazon AWS Cognito",
-                    style: TextStyle(color: Colors.red,
-                      decoration: TextDecoration.underline,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
+        child: ListView(children: <Widget>[
+          Container(
+            width: double.infinity,
+            child: GestureDetector(
+              onTap: () {
+                _launchURL("https://aws.amazon.com/jp/cognito/"); //amplifyのURL
+              },
+              child: Text(
+                "Amazon AWS Cognito",
+                style: TextStyle(
+                  color: Colors.red,
+                  decoration: TextDecoration.underline,
                 ),
+                textAlign: TextAlign.left,
               ),
-        Padding(
-        padding: const EdgeInsets.all(10.0),
-        ),
-              Container(
-              alignment: Alignment.center,
-              child: Text("ログイン"),
             ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    icon: Icon(Icons.mail_outline),
-                    hintText: '○○○○○○@examle.com',
-                    labelText: 'メールアドレス',
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text("ログイン"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                icon: Icon(Icons.mail_outline),
+                hintText: '○○○○○○@examle.com',
+                labelText: 'メールアドレス',
+              ),
+              controller: _mailAddressController,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                icon: Icon(Icons.vpn_key),
+                hintText: 'password',
+                labelText: 'パスワード',
+              ),
+              obscureText: true,
+              controller: _passwordController,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: RaisedButton(
+              child: Text('ログイン'),
+              color: Colors.indigo,
+              shape: StadiumBorder(),
+              textColor: Colors.white,
+              onPressed: () => _signIn(),
+            ),
+          ),
+          RaisedButton(
+            color: Colors.red,
+            onPressed: () {
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('ログイン'),
+                  content: const Text(
+                    'ログインセッションから認証します。',
                   ),
-                  controller: _mailAddressController,
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    FlatButton(
+                      onPressed: () => _signing(),
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    icon: Icon(Icons.vpn_key),
-                    hintText: 'password',
-                    labelText: 'パスワード',
-                  ),
-                  obscureText: true,
-                  controller: _passwordController,
-                ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text('ログイン'),
-                  color: Colors.indigo,
-                  shape: StadiumBorder(),
-                  textColor: Colors.white,
-                  onPressed: () => _signIn(),
-                ),
-              ),
-              RaisedButton(
-                color: Colors.red,
-                onPressed: () {
-                  showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        AlertDialog(
-                          title: const Text('ログイン'),
-                          content: const Text(
-                            'ログインセッションから認証します。',
-                          ),
-                          actions: <Widget>[
-                            FlatButton(
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            FlatButton(
-                              onPressed: () => _signing(),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                  );
-                },
-                child: const Text('ログイン済みの方', style: TextStyle(color: Colors.black)),
-              ),
-              RaisedButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _authenticate();
-                },
-                child: const Text('生体認証(ベータ版)', style: TextStyle(color: Colors.black)),
-              ),
-              RaisedButton(
-                color: Colors.orangeAccent,
-                onPressed: () {
-                  _showFormnewuser();
-                  _singUp();
-                },
-                child: const Text('新規登録', style: TextStyle(color: Colors.black)),
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: Text("新規登録の方はメールアドレス、パスワードを記入して↑をタップしてください"),
-              ),
-              RaisedButton(
-                color: Colors.yellow,
-                onPressed: () {
-                  _showFormforgetpass();
-                },
-                child: const Text('パスワードをお忘れの方...', style: TextStyle(color: Colors.black)),
-              ),
-              Text('パスワードをお忘れの方はメールアドレスを記入して↑をタップしてください'),
-            ]),
+              );
+            },
+            child:
+                const Text('ログイン済みの方', style: TextStyle(color: Colors.black)),
+          ),
+          RaisedButton(
+            color: Colors.blue,
+            onPressed: () {
+              _authenticate();
+            },
+            child:
+                const Text('生体認証(ベータ版)', style: TextStyle(color: Colors.black)),
+          ),
+          RaisedButton(
+            color: Colors.orangeAccent,
+            onPressed: () {
+              _showFormnewuser();
+              _singUp();
+            },
+            child: const Text('新規登録', style: TextStyle(color: Colors.black)),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text("新規登録の方はメールアドレス、パスワードを記入して↑をタップしてください"),
+          ),
+          RaisedButton(
+            color: Colors.yellow,
+            onPressed: () {
+              _showFormforgetpass();
+            },
+            child: const Text('パスワードをお忘れの方...',
+                style: TextStyle(color: Colors.black)),
+          ),
+          Text('パスワードをお忘れの方はメールアドレスを記入して↑をタップしてください'),
+        ]),
       ),
     );
   }
@@ -216,8 +227,7 @@ class _MyAppState extends State<Login> {
         ),
         context: context,
         elevation: 10,
-        builder: (_) => Column(
-            children: <Widget>[
+        builder: (_) => Column(children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -233,8 +243,7 @@ class _MyAppState extends State<Login> {
               Container(
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
-                child:
-                Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     decoration: InputDecoration(
@@ -258,9 +267,7 @@ class _MyAppState extends State<Login> {
                   onPressed: () => _confirmReset(),
                 ),
               ),
-            ]
-        )
-    );
+            ]));
   }
 
   void _showFormnewuser() async {
@@ -270,13 +277,11 @@ class _MyAppState extends State<Login> {
         ),
         context: context,
         elevation: 10,
-        builder: (_) => Column(
-            children: <Widget>[
+        builder: (_) => Column(children: <Widget>[
               Container(
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.all(8.0),
-                child:
-                Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     decoration: InputDecoration(
@@ -315,9 +320,7 @@ class _MyAppState extends State<Login> {
                   },
                 ),
               ),
-            ]
-        )
-    );
+            ]));
   }
 
   void _launchURL(uri) async {
@@ -350,7 +353,7 @@ class _MyAppState extends State<Login> {
         action: SnackBarAction(label: 'OK', onPressed: () {}),
       ),
     );
-}
+  }
 
   void _signinerror() async {
     print("ログインできません");
@@ -406,9 +409,10 @@ class _MyAppState extends State<Login> {
     bool result = false;
     _getAvailableBiometricTypes();
     try {
-      if (_availableBiometrics!.contains(BiometricType.face)
-          || _availableBiometrics!.contains(BiometricType.fingerprint)) {
-        result = await _localAuth.authenticateWithBiometrics(localizedReason: "認証してください");
+      if (_availableBiometrics!.contains(BiometricType.face) ||
+          _availableBiometrics!.contains(BiometricType.fingerprint)) {
+        result = await _localAuth.authenticateWithBiometrics(
+            localizedReason: "認証してください");
       }
       _addItem(1, user, 'true');
     } on PlatformException catch (e) {
@@ -418,10 +422,8 @@ class _MyAppState extends State<Login> {
     var session = await authSession;
     if (session.isSignedIn) {
       if (result) {
-        await Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => TabPage()
-            ));
+        await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => TabPage()));
       } else {
         _authenticaterror();
       }
@@ -468,10 +470,8 @@ class _MyAppState extends State<Login> {
       _deleteItem();
       _addItem(1, _mailAddressController.text, 'true');
       _refreshJournals();
-      await Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => TabPage()),
-              (_) => false);
+      await Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => TabPage()), (_) => false);
     } on AuthException catch (authError) {
       _signinerror();
     }
@@ -487,11 +487,9 @@ class _MyAppState extends State<Login> {
       if (session.isSignedIn) {
         _addItem(1, user, 'true');
         print("自動ログインに成功しました。");
-        await Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => TabPage()),
-                (_) => false);
-      }else {
+        await Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => TabPage()), (_) => false);
+      } else {
         _authenticaterror();
       }
     } on AuthException catch (authError) {
@@ -502,7 +500,7 @@ class _MyAppState extends State<Login> {
   void _checkUser() async {
     var attributes = await Amplify.Auth.fetchUserAttributes();
     for (var attribute in attributes) {
-      if (attribute.userAttributeKey== 'email') {
+      if (attribute.userAttributeKey == 'email') {
         setState(() {
           user = attribute.value;
         });
@@ -516,12 +514,12 @@ class _MyAppState extends State<Login> {
       await Amplify.Auth.confirmPassword(
           username: _mailAddressController.text,
           newPassword: _passwordController.text,
-          confirmationCode: _verificationController.text
-      );
+          confirmationCode: _verificationController.text);
     } on AmplifyException catch (e) {
       print(e);
     }
   }
+
   void _resendcode() async {
     try {
       var res = await Amplify.Auth.resendUserAttributeConfirmationCode(
@@ -534,10 +532,8 @@ class _MyAppState extends State<Login> {
     }
   }
 
-
   Future<void> _addItem(id, owner, token) async {
-    await Loginsql.SQLHelper.createItem(
-        id, owner, token);
+    await Loginsql.SQLHelper.createItem(id, owner, token);
   }
 
   void _deleteItem() async {
@@ -552,10 +548,11 @@ class _MyAppState extends State<Login> {
     print('sqliteから取得');
     print(_journals[0]['token']);
     if (_Lockjournals.length != 0) {
-      if (_Lockjournals[0]['token'] == 'true') {} else {
+      if (_Lockjournals[0]['token'] == 'true') {
+      } else {
         _autoLogin();
       }
-    }else {
+    } else {
       _autoLogin();
     }
   }
@@ -565,13 +562,9 @@ class _MyAppState extends State<Login> {
     print('status: ${_journals}');
     if (_journals[0]['token'] == 'true') {
       print('autoLoginStatus: ${_journals[0]['token']}');
-      await Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => TabPage()),
-                  (_) => false);
-    }else {
-
-    }
+      await Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => TabPage()), (_) => false);
+    } else {}
   }
 
   void _Fetchlockstatus() async {
@@ -584,7 +577,7 @@ class _MyAppState extends State<Login> {
       await Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => PasscodeLogin()),
-              (_) => false);
+          (_) => false);
     }
     print('sqliteから取得');
     print(_journals);

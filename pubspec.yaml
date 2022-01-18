@@ -60,6 +60,9 @@ dependencies:
   share: ^2.0.4
   flutter_zoom_sdk: ^1.0.0+5
   passcode_screen: ^2.0.1
+  substring_highlight: ^1.0.33
+  material_design_icons_flutter: ^5.0.6595
+  lottie: ^1.2.1
 
 dev_dependencies:
   flutter_test:

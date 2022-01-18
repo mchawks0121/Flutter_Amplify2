@@ -1,9 +1,10 @@
 import 'dart:convert';
+
 import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:fluamp/sqlite/Login_sql_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 class Developer extends StatefulWidget {
   @override
@@ -14,16 +15,20 @@ class _FirstPageState extends State<Developer> {
   late int len;
   List<dynamic> itemMap = [];
   Set<dynamic> ownerMap = {};
+  Set<dynamic> GoodMap = {};
+  List<dynamic> Goods = [];
   late AuthDevice fetch_device;
   String Deviceinfo = "";
   List<dynamic> Devicename = [];
   List<Map<String, dynamic>> _journals = [];
+
   @override
   void initState() {
     super.initState();
     getAlluser();
     _refreshJournals();
     FetchDevice();
+    _getgood();
   }
 
   @override
@@ -36,25 +41,23 @@ class _FirstPageState extends State<Developer> {
       ),
       body: Column(
         children: <Widget>[
-      Container(
-          child: Text('登録済みユーザー表示中...'),
-      ),
+          Container(
+            child: Text('登録済みユーザー表示中...'),
+          ),
           Expanded(
             child: ListView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               itemCount: ownerMap.length,
-              itemBuilder: (context, index)=>
-                  Card(
-                      elevation: 10,
-                      color: Colors.orange[200],
-                      margin: EdgeInsets.all(15),
-                      child: Column(
-                          children: [
-                            Text(ownerMap.elementAt(index), style: TextStyle(color: Colors.black))
-                          ]
-                      )
-                  ),
-            ),),
+              itemBuilder: (context, index) => Card(
+                  elevation: 10,
+                  color: Colors.orange[200],
+                  margin: EdgeInsets.all(15),
+                  child: Column(children: [
+                    Text(ownerMap.elementAt(index),
+                        style: TextStyle(color: Colors.black))
+                  ])),
+            ),
+          ),
           Container(
             child: Text('ログインセッション表示中...'),
           ),
@@ -62,19 +65,17 @@ class _FirstPageState extends State<Developer> {
             child: ListView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               itemCount: _journals.length,
-              itemBuilder: (context, index)=>
-              Card(
+              itemBuilder: (context, index) => Card(
                   elevation: 10,
                   color: Colors.orange[200],
                   margin: EdgeInsets.all(15),
-                child: Column(
-                children: [
-                  Text(_journals[index]['owner'], style: TextStyle(color: Colors.black)),
-                  Text(_journals[index]['token'], style: TextStyle(color: Colors.black)),
-    ]
-    )
-              ),
-    ),
+                  child: Column(children: [
+                    Text(_journals[index]['owner'],
+                        style: TextStyle(color: Colors.black)),
+                    Text(_journals[index]['token'],
+                        style: TextStyle(color: Colors.black)),
+                  ])),
+            ),
           ),
           Container(
             child: Text('アカウント情報'),
@@ -83,23 +84,36 @@ class _FirstPageState extends State<Developer> {
             child: ListView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               itemCount: 1,
-              itemBuilder: (context, index)=>
-                  Card(
-                      elevation: 100,
-                      color: Colors.orange[200],
-                      margin: EdgeInsets.all(15),
-                      child: Column(
-                          children: [
-                            Text(Deviceinfo, style: TextStyle(color: Colors.black)),
-                          ]
-                      )
-                  ),
+              itemBuilder: (context, index) => Card(
+                  elevation: 100,
+                  color: Colors.orange[200],
+                  margin: EdgeInsets.all(15),
+                  child: Column(children: [
+                    Text(Deviceinfo, style: TextStyle(color: Colors.black)),
+                  ])),
+            ),
+          ),
+          Container(
+            child: Text('Good情報'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: 1,
+              itemBuilder: (context, index) => Card(
+                  elevation: 100,
+                  color: Colors.orange[200],
+                  margin: EdgeInsets.all(15),
+                  child: Column(children: [
+                    Text(Goods.toString(), style: TextStyle(color: Colors.black)),
+                  ])),
             ),
           ),
         ],
       ),
     );
   }
+
   void getAlluser() async {
     try {
       print('getAlluser_start');
@@ -117,15 +131,15 @@ class _FirstPageState extends State<Developer> {
 
       var operation = Amplify.API.query(
           request: GraphQLRequest<String>(
-            document: graphQLDocument,
-          ));
+        document: graphQLDocument,
+      ));
       var response = await operation.response;
 
       Map<String, dynamic> map = jsonDecode(response.data);
       len = map['listOwners']['items'].length;
-      ownerMap= {};
+      ownerMap = {};
       setState(() {
-        for(int i=0;i<len;i++) {
+        for (int i = 0; i < len; i++) {
           final List = map['listOwners']['items'][i]['owner'];
           ownerMap.add(List);
         }
@@ -135,6 +149,7 @@ class _FirstPageState extends State<Developer> {
       print('Query failed: $e');
     }
   }
+
   void _refreshJournals() async {
     final data = await SQLHelper.getItems();
     setState(() {
@@ -160,4 +175,38 @@ class _FirstPageState extends State<Developer> {
       print('Fetch devices failed with error: $e');
     }
   }
+
+  void _getgood() async {
+    try {
+      String graphQLDocument = '''query listGoods {
+      listGoods {
+        items {
+          id
+          name
+          commentId
+        }
+        nextToken
+      }
+    }''';
+
+      var operation = Amplify.API.query(
+          request: GraphQLRequest<String>(
+        document: graphQLDocument,
+      ));
+      var response = await operation.response;
+      Map<String, dynamic> map = jsonDecode(response.data);
+      GoodMap = {};
+      Goods = [];
+      setState(() {
+          final List = map['listGoods']['items'];
+          //GoodMap.add(List);
+          Goods.add(List);
+      });
+      print('Goods: ${Goods.toString()}');
+      print(map['listGoods']);
+    } on ApiException catch (e) {
+      print('失敗: $e');
+    }
+  }
 }
+

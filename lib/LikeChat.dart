@@ -1,19 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:fluamp/LikeChat.dart';
-import 'package:flutter/foundation.dart';
+import 'package:fluamp/sqlite/MeetingId_sql_helper.dart';
+import 'package:fluamp/video/Zoomindex_modified.dart';
 import 'package:flutter/material.dart';
-import 'Chat.dart';
-import 'ChatSettings.dart';
-import 'amplifyconfiguration.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:simple_url_preview/simple_url_preview.dart';
+import 'package:substring_highlight/substring_highlight.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'ChatSettings.dart';
+import 'Detailchat.dart';
+import 'Thread.dart';
 
 class LikeChat extends StatefulWidget {
   @override
@@ -24,12 +25,21 @@ class _LikeChatState extends State<LikeChat> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late int len;
   var user;
-  late Map<String, String> _getUrlResult={};
+  var meetingurl;
+  var meetingid;
+  var meetingpass;
+  late Map<String, String> _getUrlResult = {};
   List<dynamic> itemMap = [];
   List<dynamic> itemLike = [];
   List<dynamic> Liked = [];
   Set<dynamic> ownerMap = {};
   Set<dynamic> likedMap = {};
+  final defaultStyle = TextStyle(
+    color: Colors.black,
+  );
+  final highlightStyle = TextStyle(
+    color: Colors.blue,
+  );
 
   @override
   void initState() {
@@ -55,112 +65,158 @@ class _LikeChatState extends State<LikeChat> {
               icon: Icon(Icons.settings),
               onPressed: () => {
                 Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => ChatSettings()
-                    ))
+                    MaterialPageRoute(builder: (context) => ChatSettings()))
               },
             ),
           ]),
-      body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  print('Loading');
-                  LoadData();
-                },
-                child: ListView.builder(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemCount: Liked.length,
-                  itemBuilder: (context, index) => Card(
+      body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+        ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              print('Loading');
+              LoadData();
+            },
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: Liked.length,
+              itemBuilder: (context, index) => GestureDetector(
+                  child: Card(
                     elevation: 100,
                     color: Colors.amber[200],
                     margin: EdgeInsets.all(15),
-                    child: Column(
-                        children: [
-                          (Liked != null)?
-                          Row(
-                            children: [
-                              Padding(padding: const EdgeInsets.all(10.0)),
-                              Container(
-                                width: 50.0,
-                                height: 50.0,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover, image: (_getUrlResult[Liked[index]['name']] == null)?
-                                  NetworkImage('https://pbs.twimg.com/profile_images/1318213516935917568/mbU5hOLy_400x400.png')
-                                      :NetworkImage(_getUrlResult[Liked[index]['name']] as String)),
-                                  borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                                  color: Colors.redAccent,
-                                ),
-                              ),
-                              Padding(padding: const EdgeInsets.all(10.0)),
-                              Column(
-                                children: [
-                                  Text((Liked[index]['name']), style: TextStyle(color: Colors.black)),
-                                  SelectableText(Liked[index]['createdAt'], style: TextStyle(color: Colors.black)),
-                                ],
-                              ),
-                              Padding(padding: const EdgeInsets.all(40.0)),
-                              Row(
-                                children: [
-                                  IconButton(
-                                      icon: Icon(Icons.delete),
-                                      iconSize: 20,
-                                      onPressed: () => {
-                                        _deleteLike(itemLike[0][index]['id']),
-                                        print("index: ${itemLike[0][index]['id']}"),
-                                      }
+                    child: Column(children: [
+                      (Liked != null)
+                          ? Row(
+                              children: [
+                                Padding(padding: const EdgeInsets.all(10.0)),
+                                Container(
+                                  width: 50.0,
+                                  height: 50.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: (_getUrlResult[Liked[index]
+                                                    ['name']] ==
+                                                null)
+                                            ? NetworkImage(
+                                                'https://pbs.twimg.com/profile_images/1318213516935917568/mbU5hOLy_400x400.png')
+                                            : NetworkImage(_getUrlResult[
+                                                    Liked[index]['name']]
+                                                as String)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50.0)),
+                                    color: Colors.redAccent,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ):Row(
-                        children: [
-                          Padding(padding: const EdgeInsets.all(10.0)),
-                          Container(
-                            child: Text("お気に入りはありません")
-                          ),
-                        ]
-                          ),
-                          ListTile(
-                            title: SelectableText(Liked[index]['description'], style: TextStyle(color: Colors.black), onTap: () => _launchURL(Liked[index]['description'])),
-                            trailing: SizedBox(
-                              width: 100,
+                                ),
+                                Padding(padding: const EdgeInsets.all(10.0)),
+                                Column(
+                                  children: [
+                                    Text((Liked[index]['name']),
+                                        style: TextStyle(color: Colors.black)),
+                                    SelectableText(Liked[index]['createdAt'],
+                                        style: TextStyle(color: Colors.black)),
+                                  ],
+                                ),
+                                Padding(padding: const EdgeInsets.all(40.0)),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        icon: Icon(Icons.delete),
+                                        iconSize: 20,
+                                        onPressed: () => {
+                                              _deleteLike(
+                                                  itemLike[0][index]['id']),
+                                              print(
+                                                  "index: ${itemLike[0][index]['id']}"),
+                                            }),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : Row(children: [
+                              Padding(padding: const EdgeInsets.all(10.0)),
+                              Container(child: Text("お気に入りはありません")),
+                            ]),
+                      ListTile(
+                        title: SubstringHighlight(
+                          text: Liked[index]['description'],
+                          term: getSplittedURL(Liked[index]['description']) ==
+                                  null
+                              ? ""
+                              : getSplittedURL(Liked[index]['description']),
+                          textStyle: defaultStyle,
+                          textStyleHighlight: highlightStyle,
+                        ),
+                        trailing: SizedBox(
+                          width: 10,
+                        ),
+                      ),
+                      (_launchZoom(Liked[index]['description']) == 'true')
+                          ? IconButton(
+                              icon: Icon(Icons.videocam),
+                              iconSize: 20,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Zoomindex_modified()),
+                                );
+                                LoadData();
+                                meetingid = getSplittedZoomURL(
+                                    Liked[index]['description']);
+                                meetingpass = getSplittedZoomPass(
+                                    Liked[index]['description']);
+                                setZoomid();
+                                //_confirminfo();
+                              })
+                          : IconButton(
+                              icon: Icon(Icons.videocam_off),
+                              iconSize: 0,
+                              onPressed: () => {},
                             ),
-                          ),
-                          SimpleUrlPreview(
-                            isClosable: true,
-                            bgColor: Colors.amber[200],
-                            url: _URLLink(Liked[index]['description']).toString()!=""?_URLLink(Liked[index]['description']).toString():"",
-                            titleStyle: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            descriptionStyle: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            siteNameStyle: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onTap:()=> _launchURL(Liked[index]['description']),
-                          ),
-                        ]),
+                      SimpleUrlPreview(
+                        isClosable: true,
+                        bgColor: Colors.amber[200],
+                        url: _URLLink(Liked[index]['description']).toString() !=
+                                ""
+                            ? _URLLink(Liked[index]['description']).toString()
+                            : "",
+                        titleStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        descriptionStyle: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        siteNameStyle: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onTap: () => _launchURL(Liked[index]['description']),
+                      ),
+                    ]),
                   ),
-                ),
-              ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Detailchat(itemMap[index])),
+                    );
+                    print('detail: ${itemMap[index]}');
+                  }),
             ),
-          ]
-      ),
+          ),
+        ),
+      ]),
     );
   }
 
@@ -186,17 +242,17 @@ class _LikeChatState extends State<LikeChat> {
 
       var operation = Amplify.API.query(
           request: GraphQLRequest<String>(
-            document: graphQLDocument,
-          ));
+        document: graphQLDocument,
+      ));
       var response = await operation.response;
 
       Map<String, dynamic> map = jsonDecode(response.data);
       len = map['listLikeds']['items'].length;
-      likedMap= {};
+      likedMap = {};
       var Listowner;
       var Listid;
       setState(() {
-        for(int i=0;i<len;i++) {
+        for (int i = 0; i < len; i++) {
           Listowner = map['listLikeds']['items'][i]['owner'];
           Listid = map['listLikeds']['items'][i]['commentId'];
           final List = map['listLikeds']['items'];
@@ -212,7 +268,7 @@ class _LikeChatState extends State<LikeChat> {
   void _currentuser() async {
     var attributes = await Amplify.Auth.fetchUserAttributes();
     for (var attribute in attributes) {
-      if (attribute.userAttributeKey== 'email') {
+      if (attribute.userAttributeKey == 'email') {
         print("user's email is ${attribute.value}");
         setState(() {
           user = attribute.value;
@@ -221,14 +277,63 @@ class _LikeChatState extends State<LikeChat> {
     }
   }
 
+  void _confirminfo() async {
+    print("Zoom meetingの情報をコピーしました");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Zoom meetingsの情報をコピーしました'),
+      ),
+    );
+  }
+
   String? getSplittedURL(String message) {
     final RegExp urlRegExp = RegExp(
         r'((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?');
-    final Iterable<RegExpMatch> urlMatches =
-    urlRegExp.allMatches(message);
+    final Iterable<RegExpMatch> urlMatches = urlRegExp.allMatches(message);
     for (Match m in urlMatches) {
-      return(m.group(0));
+      return (m.group(0));
     }
+  }
+
+  String? getSplittedZoomURL(String message) {
+    final RegExp urlRegExp = RegExp('(?:ミーティングID: [0-9]{0,11})');
+    final Iterable<RegExpMatch> urlMatches = urlRegExp.allMatches(message);
+    for (Match m in urlMatches) {
+      meetingid = m.group(0);
+      final id = meetingid.split('ミーティングID:');
+      return id[1];
+    }
+  }
+
+  String? getSplittedZoomPass(String message) {
+    final RegExp urlRegExp = RegExp('(?:パスコード: [!-~]{6})');
+    final Iterable<RegExpMatch> urlMatches = urlRegExp.allMatches(message);
+    for (Match m in urlMatches) {
+      final pass = m.group(0);
+      final passchange = pass!.split(':');
+      meetingpass = passchange[1];
+      return passchange[1];
+    }
+  }
+
+  String? _launchZoom(meetingid) {
+    meetingurl = getSplittedZoomURL(meetingid);
+    if (meetingurl == null) {
+      return 'false';
+    } else {
+      return 'true';
+    }
+  }
+
+  Future<void> setZoomid() async {
+    print('setZooomid: ${meetingid}, ${meetingpass}');
+    deleteMeetingid();
+    SQLHelper.createmeetingid(
+        1, meetingid, meetingpass == null ? '' : meetingpass);
+  }
+
+  void deleteMeetingid() async {
+    await SQLHelper.deleteAllmeetingid();
   }
 
   _launchURL(uri) async {
@@ -249,8 +354,7 @@ class _LikeChatState extends State<LikeChat> {
 
   void _deleteLike(id) async {
     try {
-      String graphQLDocument =
-      '''mutation deleteLiked(\$id: ID!) {
+      String graphQLDocument = '''mutation deleteLiked(\$id: ID!) {
           deleteLiked(input: { id: \$id }) {
             id
             owner
@@ -259,9 +363,8 @@ class _LikeChatState extends State<LikeChat> {
     }''';
 
       var operation = Amplify.API.mutate(
-          request: GraphQLRequest<String>(document: graphQLDocument, variables: {
-            'id': id
-          }));
+          request: GraphQLRequest<String>(
+              document: graphQLDocument, variables: {'id': id}));
       var response = await operation.response;
       var data = response.data;
       getLiked();
@@ -270,7 +373,7 @@ class _LikeChatState extends State<LikeChat> {
         content: Text('お気に入りを削除しました!'),
       ));
       print("Success-likedelete: ${data}");
-    } on AuthException catch(e) {
+    } on AuthException catch (e) {
       print("Faild-likedelete: ${e}");
     }
   }
@@ -294,8 +397,8 @@ class _LikeChatState extends State<LikeChat> {
 
       var operation = Amplify.API.query(
           request: GraphQLRequest<String>(
-            document: graphQLDocument,
-          ));
+        document: graphQLDocument,
+      ));
       //List<Map<String, dynamic>> _journals = [];
       var response = await operation.response;
       int i = 0;
@@ -303,14 +406,14 @@ class _LikeChatState extends State<LikeChat> {
       var attributes = await Amplify.Auth.fetchUserAttributes();
       var user = "";
       for (var attribute in attributes) {
-        if (attribute.userAttributeKey== 'email') {
+        if (attribute.userAttributeKey == 'email') {
           print("user's email is ${attribute.value}");
           user = attribute.value;
         }
       }
 
       Map<String, dynamic> map = jsonDecode(response.data);
-      itemMap= [];
+      itemMap = [];
       itemLike = [];
       Liked = [];
       itemLike = likedMap.toList();
@@ -319,42 +422,33 @@ class _LikeChatState extends State<LikeChat> {
       List<String> userstr = user.split('@');
       setState(() {
         itemMap = map['listTodos']['items'];
-        itemlikelen  = itemLike[0].length;
+        itemlikelen = itemLike[0].length;
         itemmaplen = itemMap.length;
-        for (int i=0;i<itemlikelen;i++) {
-          print("currentuser: ${userstr[0]}");
-          print("Likeuser: ${itemLike[0][i]['owner']}");
-          print("AllitemMap: ${itemMap}");
-          print("AllitemLike: ${itemLike[0]}");
-          print("itemLike: ${itemLike[0][i]['commentId']}");
+        for (int i = 0; i < itemlikelen; i++) {
           if (userstr[0] == itemLike[0][i]['owner']) {
-            for (int j=0;j<itemmaplen;j++) {
+            for (int j = 0; j < itemmaplen; j++) {
               print("itemMap: ${itemMap[j]['id']}");
               if (itemMap[j]['id'] == itemLike[0][i]['commentId']) {
                 Liked.add(itemMap[j]);
-                print("itemlikelen: ${itemlikelen}");
-                print("Likedlength: ${Liked.length}");
-                print("InsertLiked: ${itemMap[j]}");
-                print("LikedData: $Liked");
               }
             }
-          }
-          else {
-          }
+          } else {}
         }
-        Liked.sort( (a, b) => -a['count'].compareTo(b['count']) );
+        Liked.sort((a, b) => -a['count'].compareTo(b['count']));
+        print('Liked: $Liked');
         //itemMap.sort( (a, b) => -a['count'].compareTo(b['count']) ); //要素countで逆順ソート
       });
     } on ApiException catch (e) {
       print('Query failed: $e');
     }
   }
+
   void getUrlall() async {
-    _getUrlResult={};
+    _getUrlResult = {};
     try {
       var attributes = await Amplify.Auth.fetchUserAttributes();
       for (var attribute in attributes) {
-        if (attribute.userAttributeKey== 'email') {
+        if (attribute.userAttributeKey == 'email') {
           print("user's email is ${attribute.value}");
           setState(() {
             user = attribute.value;
@@ -365,11 +459,12 @@ class _LikeChatState extends State<LikeChat> {
       var key = user.split("@");
       S3GetUrlOptions options = S3GetUrlOptions(
           accessLevel: StorageAccessLevel.guest, expires: 10000);
-      for(int i=0;i<ownerMap.length;i++) {
+      for (int i = 0; i < ownerMap.length; i++) {
         GetUrlResult result =
-        await Amplify.Storage.getUrl(key: '${ownerMap.elementAt(i)}.jpeg');
+            await Amplify.Storage.getUrl(key: '${ownerMap.elementAt(i)}.jpeg');
         setState(() {
-          _getUrlResult.addAll({ownerMap.elementAt(i): '${result.url}' as String});
+          _getUrlResult
+              .addAll({ownerMap.elementAt(i): '${result.url}' as String});
         });
         print(_getUrlResult[ownerMap.elementAt(i)] as String);
       }
@@ -381,8 +476,7 @@ class _LikeChatState extends State<LikeChat> {
 
   void setAlluser() async {
     try {
-      String graphQLDocument =
-      '''mutation CreateOwner(\$owner: String!) {
+      String graphQLDocument = '''mutation CreateOwner(\$owner: String!) {
               createOwner(input: {owner: \$owner}) {
                 owner
               }
@@ -392,7 +486,7 @@ class _LikeChatState extends State<LikeChat> {
       var user = "";
       List<String> str = [];
       for (var attribute in attributes) {
-        if (attribute.userAttributeKey== 'email') {
+        if (attribute.userAttributeKey == 'email') {
           print("user's email is ${attribute.value}");
           user = attribute.value;
         }
@@ -417,7 +511,7 @@ class _LikeChatState extends State<LikeChat> {
   void setLiked(id) async {
     try {
       String graphQLDocument =
-      '''mutation CreateLiked(\$owner: String!, \$commentId: String!) {
+          '''mutation CreateLiked(\$owner: String!, \$commentId: String!) {
               createLiked(input: {owner: \$owner, commentId: \$commentId}) {
                 owner
                 commentId
@@ -428,15 +522,12 @@ class _LikeChatState extends State<LikeChat> {
       var user = "";
       List<String> str = [];
       for (var attribute in attributes) {
-        if (attribute.userAttributeKey== 'email') {
+        if (attribute.userAttributeKey == 'email') {
           user = attribute.value;
         }
       }
       str = user.split('@');
-      var variables = {
-        "owner": str[0],
-        "commentId": id
-      };
+      var variables = {"owner": str[0], "commentId": id};
       var request = GraphQLRequest<String>(
           document: graphQLDocument, variables: variables);
 
@@ -478,15 +569,15 @@ class _LikeChatState extends State<LikeChat> {
 
       var operation = Amplify.API.query(
           request: GraphQLRequest<String>(
-            document: graphQLDocument,
-          ));
+        document: graphQLDocument,
+      ));
       var response = await operation.response;
 
       Map<String, dynamic> map = jsonDecode(response.data);
       len = map['listOwners']['items'].length;
-      ownerMap= {};
+      ownerMap = {};
       setState(() {
-        for(int i=0;i<len;i++) {
+        for (int i = 0; i < len; i++) {
           final List = map['listOwners']['items'][i]['owner'];
           ownerMap.add(List);
         }
