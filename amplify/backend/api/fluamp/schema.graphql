@@ -10,17 +10,39 @@ type Todo @model
   owner: String
   count: Int!
   good: [String]
-  thread: [Thread]
+  edited: String
   createdAt: String
   updateAt: String
 }
 
 type Thread @model
 {
+  id: ID! @index(name: "byCreatedAt", sortKeyFields: ["count"])
   subject: String
   owner: String
   count: Int!
+  good: [String]
   comment: String
+  createdAt: String
+}
+
+type ChatList @model
+{
+  id: ID!
+  owner: String
+  name: String
+}
+
+type Chat @model
+{
+  id: ID! @index(name: "byCreatedAt", sortKeyFields: ["count"])
+  owner: String
+  description: String
+  to: String
+  room: String
+  count: Int!
+  good: [String]
+  unread: String
   createdAt: String
 }
 

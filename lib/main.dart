@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +15,7 @@ import 'sqlite/Login_sql_helper.dart' as Loginsql;
 import 'sqlite/Secure_sql_helper.dart' as Securesql;
 
 Future<void> main() async {
+  initializeDateFormatting('ja_JP');
   runApp(App());
 }
 
@@ -446,6 +448,32 @@ class _MyAppState extends State<Login> {
     }
   }
 
+  void setAlluser(user) async {
+    try {
+      String graphQLDocument = '''mutation CreateOwner(\$owner: String!) {
+              createOwner(input: {owner: \$owner}) {
+                owner
+              }
+        }''';
+
+      List<String> str = [];
+      str = user.split('@');
+      var variables = {
+        "owner": str[0],
+      };
+      var request = GraphQLRequest<String>(
+          document: graphQLDocument, variables: variables);
+
+      var operation = Amplify.API.mutate(request: request);
+      var response = await operation.response;
+
+      var data = response.data;
+      print('result: ' + data);
+    } on ApiException catch (e) {
+      print('failed: $e');
+    }
+  }
+
   void _confirmSignUp() async {
     try {
       SignUpResult res = await Amplify.Auth.confirmSignUp(
@@ -470,6 +498,7 @@ class _MyAppState extends State<Login> {
       _deleteItem();
       _addItem(1, _mailAddressController.text, 'true');
       _refreshJournals();
+      setAlluser(_mailAddressController.text);
       await Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) => TabPage()), (_) => false);
     } on AuthException catch (authError) {

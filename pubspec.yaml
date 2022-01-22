@@ -63,6 +63,9 @@ dependencies:
   substring_highlight: ^1.0.33
   material_design_icons_flutter: ^5.0.6595
   lottie: ^1.2.1
+  table_calendar: ^3.0.3
+  flutter_chat_ui:
+  crypto: any
 
 dev_dependencies:
   flutter_test:

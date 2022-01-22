@@ -13,7 +13,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'ChatSettings.dart';
-import 'Detailchat.dart';
+import 'Detailboard.dart';
 import 'Thread.dart';
 
 class LikeChat extends StatefulWidget {
@@ -209,7 +209,7 @@ class _LikeChatState extends State<LikeChat> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Detailchat(itemMap[index])),
+                          builder: (context) => Detailboard(itemMap[index])),
                     );
                     print('detail: ${itemMap[index]}');
                   }),

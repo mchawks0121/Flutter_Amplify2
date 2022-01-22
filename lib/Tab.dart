@@ -1,22 +1,29 @@
+import 'package:fluamp/Chat.dart';
 import 'package:fluamp/video/Zoomindex.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'CalendarScreen.dart';
 import 'Configuration.dart';
-import 'Chat.dart';
+import 'Board.dart';
 
 class TabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     final _kTabPages = <Widget>[
+      Board(),
       MyChat(),
       Zoomindex(),
+      CalendarScreen(),
       Configuration(),
     ];
 
     final _kTabs = <Tab>[
-      const Tab(icon: Icon(Icons.chat_bubble_outline), text: 'ボード', height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
-      const Tab(icon: Icon(Icons.videocam), text: 'ミーティング', height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
-      const Tab(icon: Icon(Icons.person_outline), text: 'マイページ', height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(Icons.chat_bubble_outline), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(Icons.chat), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(Icons.videocam), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+    const Tab(icon: Icon(MdiIcons.calendarCheck), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(Icons.person_outline), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
     ];
     return DefaultTabController(
       length: _kTabs.length,

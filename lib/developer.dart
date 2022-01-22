@@ -105,13 +105,99 @@ class _FirstPageState extends State<Developer> {
                   color: Colors.orange[200],
                   margin: EdgeInsets.all(15),
                   child: Column(children: [
-                    Text(Goods.toString(), style: TextStyle(color: Colors.black)),
+                    Text(Goods.toString(),
+                        style: TextStyle(color: Colors.black)),
                   ])),
             ),
+          ),
+          TextButton(
+            onPressed: () {
+              AllAwsResourcesdelete();
+            },
+            child: Text('AWSリソース削除'),
           ),
         ],
       ),
     );
+  }
+
+  void AllAwsResourcesdelete() async {
+    _deleteThread();
+    _delete();
+    deleteLiked();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('AWSリソースを全削除しました!'),
+    ));
+  }
+
+  void deleteLiked() async {
+    try {
+      String graphQLDocument =
+      '''mutation deleteLiked(\$id: ID!) {
+              deleteLiked(input: { id: \$id }) {
+                owner
+                commentId
+              }
+        }''';
+
+      var operation = Amplify.API.mutate(
+          request: GraphQLRequest<String>(
+              document: graphQLDocument, variables: {}));
+      var response = await operation.response;
+      var data = response.data;
+      print('Likedresult: ' + data);
+    } on ApiException catch (e) {
+      print('Likedfailed: $e');
+    }
+  }
+
+  void _delete() async {
+    try {
+      String graphQLDocument = '''mutation deleteTodo(\$id: ID!) {
+          deleteTodo(input: { id: \$id }) {
+            id
+            name
+            description
+            owner
+            count
+            edited
+            good
+            createdAt
+            updateAt
+          }
+    }''';
+
+      var operation = Amplify.API.mutate(
+          request: GraphQLRequest<String>(
+              document: graphQLDocument, variables: {}));
+      var response = await operation.response;
+      var data = response.data;
+      print("Success-delete_item: ${data}");
+    } on AuthException catch (e) {
+      print("Faild-delete_item: ${e}");
+    }
+  }
+
+  void _deleteThread() async {
+    try {
+      String graphQLDocument = '''mutation deleteThread(\$id: ID!) {
+          deleteThread(input: { id: \$id }) {
+            id
+            subject
+            owner
+            comment
+            createdAt
+          }
+    }''';
+      var operation = Amplify.API.mutate(
+          request: GraphQLRequest<String>(
+              document: graphQLDocument, variables: {}));
+      var response = await operation.response;
+      var data = response.data;
+      print("Success-delete_thread: ${data}");
+    } on AuthException catch (e) {
+      print("Faild-delete_thread: ${e}");
+    }
   }
 
   void getAlluser() async {
@@ -198,9 +284,9 @@ class _FirstPageState extends State<Developer> {
       GoodMap = {};
       Goods = [];
       setState(() {
-          final List = map['listGoods']['items'];
-          //GoodMap.add(List);
-          Goods.add(List);
+        final List = map['listGoods']['items'];
+        //GoodMap.add(List);
+        Goods.add(List);
       });
       print('Goods: ${Goods.toString()}');
       print(map['listGoods']);
@@ -209,4 +295,3 @@ class _FirstPageState extends State<Developer> {
     }
   }
 }
-

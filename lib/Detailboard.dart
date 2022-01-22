@@ -7,16 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:simple_url_preview/simple_url_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Detailchat extends StatefulWidget {
+class Detailboard extends StatefulWidget {
   Map<String, dynamic> itemMap;
 
-  Detailchat(this.itemMap);
+  Detailboard(this.itemMap);
 
   @override
   _FirstPageState createState() => _FirstPageState();
 }
 
-class _FirstPageState extends State<Detailchat> {
+class _FirstPageState extends State<Detailboard> {
   late int len;
   var user;
   var username = [];
