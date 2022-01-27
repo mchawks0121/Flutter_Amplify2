@@ -27,9 +27,12 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
   late int len;
   final _formKey = GlobalKey<FormState>();
   var username;
+  var updateid;
+  var ownerid;
   late String roomcrypto1;
   late String roomcrypto2;
   Set<dynamic> ownerMap = {};
+  List<dynamic> ownerList = [];
   late Map<String, String> _getUrlResult = {};
 
   @override
@@ -39,12 +42,13 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
     getAlluser();
     getUrlall();
     _fetch();
-    _LoadData();
+    _loadData();
   }
 
   @override
   Widget build(BuildContext context) {
     _subscribeCreate();
+    _subscribeUpdate();
     return Scaffold(
       key: this._scaffoldKey,
       drawerEdgeDragWidth: 0,
@@ -54,7 +58,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
           actions: [
             IconButton(
               icon: Icon(Icons.autorenew),
-              onPressed: () => {_LoadData()},
+              onPressed: () => {_loadData()},
             ),
           ]),
       body: SizedBox(
@@ -75,7 +79,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
                               ? Container(
                                   alignment: Alignment.centerRight,
                                   child: Card(
-                                    margin: EdgeInsets.only(top: 5.0, left: 200.0, bottom: 5.0, right: 8.0),
+                                    margin: EdgeInsets.only(top: 5.0, left: 100.0, bottom: 5.0, right: 8.0),
                                     color: Colors.orange[100],
                                     child: Column(
                                         //crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,10 +87,12 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
                                           ListTile(
                                             title: Text(
                                                 chatMap[index]['description'],
-                                                textAlign: TextAlign.right),
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(color: Colors.black)),
                                             subtitle: Text(
                                                 chatMap[index]['createdAt'],
-                                                textAlign: TextAlign.right),
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(color: Colors.black,fontSize: 8.5)),
                                             trailing: Container(
                                               width: 30.0,
                                               height: 30.0,
@@ -144,17 +150,19 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
                                   alignment: Alignment.centerLeft,
                                   child: Card(
                                     color: Colors.greenAccent[100],
-                                    margin: EdgeInsets.only(top: 5.0, left: 8.0, bottom: 5.0, right: 200.0),
+                                    margin: EdgeInsets.only(top: 5.0, left: 8.0, bottom: 5.0, right: 100.0),
                                     child: Column(
                                         //crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           ListTile(
                                             title: Text(
                                                 chatMap[index]['description'],
-                                                textAlign: TextAlign.left),
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(color: Colors.black)),
                                             subtitle: Text(
                                                 chatMap[index]['createdAt'],
-                                                textAlign: TextAlign.left),
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(color: Colors.black, fontSize: 8.5)),
                                             leading: Container(
                                               width: 30.0,
                                               height: 30.0,
@@ -232,9 +240,10 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
                                           maxLines: 5,
                                           minLines: 1,
                                           decoration: const InputDecoration(
-                                            hintText: 'メッセージを入力してください',
+                                            hintText: 'メッセージ',
                                           ),
                                           onTap: (){
+                                            _update();
                                             // タイマーを入れてキーボード分スクロールする様に
                                             Timer(
                                               Duration(milliseconds: 200),
@@ -264,6 +273,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
                                             color: Colors.white,
                                             onPressed: () {
                                               _create();
+                                              _updateOwner(ownerid);
                                               Timer(
                                                 Duration(milliseconds: 200),
                                                 _scrollToBottom,
@@ -286,18 +296,20 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
     );
   }
 
-  _LoadData() async {
+  Future _loadData() async {
+    await Future.delayed(Duration(seconds: 2));
+    _fetch();
     getAlluser();
     getUrlall();
-    _fetch();
   }
 
   void _create() async {
     try {
       String graphQLDocument =
-          '''mutation CreateChat(\$owner: String, \$description: String, \$to: String, \$room: String, \$count: Int!, \$good: [String], \$unread:String, \$createdAt: String) {
-              createChat(input: {owner: \$owner, description: \$description, to: \$to, room: \$room, count: \$count, good: \$good, unread: \$unread, createdAt: \$createdAt}) {
+          '''mutation CreateChat(\$owner: String, \$ownerid: String, \$description: String, \$to: String, \$room: String, \$count: Int!, \$good: [String], \$unread:String, \$createdAt: String) {
+              createChat(input: {owner: \$owner, ownerid: \$ownerid, description: \$description, to: \$to, room: \$room, count: \$count, good: \$good, unread: \$unread, createdAt: \$createdAt}) {
                 id
+                ownerid
                 owner
                 description
                 to
@@ -324,10 +336,16 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
       print('chat_to: ${widget.toUser}');
       str = user.split('@');
       final emptylist = [];
+      for(int i=0;i<ownerList.length;i++) {
+        if(ownerList[i]['owner']==username[0]){
+          ownerid = ownerList[i]['id'];
+        }
+      }
       var count = len + 1;
       var room = crypt(username[0]+widget.toUser);
       var variables = {
         "owner": str[0],
+        "ownerid": ownerid,
         "description": _chattextInputController.text,
         "to": widget.toUser,
         "room": room,
@@ -343,11 +361,50 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
       var response = await operation.response;
 
       var data = response.data;
-      _fetch();
       _chattextInputController.text = '';
-      print('result: ' + data);
+      print('resultid: ' + data);
     } on ApiException catch (e) {
       print('failed: $e');
+    }
+  }
+
+  void _update() async {
+    try {
+      String graphQLDocument =
+      '''mutation UpdateChat(\$id: ID!, \$unread: String) {
+              updateChat(input: {id: \$id, unread: \$unread}) {
+          id
+          ownerid
+          owner
+          description
+          to
+          room
+          count
+          good
+          unread
+          createdAt
+              }
+        }''';
+
+      print('chatMap.length: ${chatMap.length}');
+      for (int i = 0; i < chatMap.length; i++) {
+        if(chatMap[i]['unread'] == 'false' && chatMap[i]['to']==username[0] &&chatMap[i]['owner']!=username[0]) {
+          updateid = chatMap[i]['id'];
+          print('updateid: $updateid');
+          var operation = Amplify.API.mutate(
+              request:
+              GraphQLRequest<String>(document: graphQLDocument, variables: {
+                'id': updateid,
+                "unread": true,
+              }));
+
+          var response = await operation.response;
+          var data = response.data;
+          print('unread_update result: ' + data);
+        }
+      }
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
     }
   }
 
@@ -357,6 +414,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
       listChats {
         items {
           id
+          ownerid
           owner
           description
           to
@@ -390,6 +448,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
         chatMap
             .sort((a, b) => -a['count'].compareTo(b['count'])); //要素countで逆順ソート
         print('chatMap: $chatMap');
+        _update();
       });
     } on ApiException catch (e) {
       print('Query failed: $e');
@@ -450,6 +509,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
       String graphQLDocument = '''subscription OnCreateChat {
         onCreateChat {
           id
+          ownerid
           owner
           description
           to
@@ -465,14 +525,6 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
           request: GraphQLRequest<String>(document: graphQLDocument),
           onData: (event) {
             _fetch();
-            Map<String, dynamic> data = jsonDecode(event.data as String);
-            var eventname = data['onCreateChat']['name'];
-            var eventdata = data['onCreateChat']['description'];
-            print('CreateSubscription event data received: ${event.data}');
-            var creator = username;
-            if (creator[0] != eventname) {
-              //setNotification('[作成]: $eventname', eventdata);
-            }
           },
           onEstablished: () {
             //getUrlall();
@@ -495,6 +547,70 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
     print('chatMap: $chatMap');
     print('roomcrypto1; ${roomcrypto1}');
     return roomcrypto1;
+  }
+
+  void _updateOwner(id) async {
+    try {
+      String graphQLDocument =
+      '''mutation UpdateOwner(\$id: ID!,\$count: Int!, \$updatedAt: String) {
+              updateOwner(input: {id: \$id, count: \$count, updatedAt: \$updatedAt}) {
+                id
+                count
+                updatedAt
+              }
+        }''';
+
+      DateTime now = DateTime.now();
+      DateFormat outputFormat = DateFormat('yyyy-MM-dd-Hm');
+      String date = outputFormat.format(now);
+
+      var operation = Amplify.API.mutate(
+          request:
+          GraphQLRequest<String>(document: graphQLDocument, variables: {
+            'id': id,
+            'count': 1,
+            "updatedAt": date,
+          }));
+
+      var response = await operation.response;
+      var data = response.data;
+      _fetch();
+      print('Mutation updateOwner: ' + data);
+    } on ApiException catch (e) {
+      print('Mutation updateOwner: $e');
+    }
+  }
+
+  void _subscribeUpdate() async {
+    try {
+      String graphQLDocument = '''subscription OnUpdateOwner {
+        onUpdateOwner {
+        id
+          createdAt
+          owner
+          count
+          updatedAt
+              }
+        }''';
+
+      var operation = Amplify.API.subscribe(
+          request: GraphQLRequest<String>(document: graphQLDocument),
+          onData: (event) {
+            _fetch();
+          },
+          onEstablished: () {
+            //getUrlall();
+            print('UpdateSubscription established');
+          },
+          onError: (e) {
+            print('UpcateSubscription failed with error: $e');
+          },
+          onDone: () {
+            print('Subscription has been closed successfully');
+          });
+    } on ApiException catch (e) {
+      print('Failed to establish subscription: $e');
+    }
   }
 
   void getAlluser() async {
@@ -526,6 +642,7 @@ class _MyChatState extends State<Chatdetails> with TickerProviderStateMixin {
           final ownerMapList = map['listOwners']['items'][i]['owner'];
           final chatListList = map['listOwners']['items'];
           ownerMap.add(ownerMapList);
+          ownerList=chatListList;
         }
       });
       print('ownerMap: ${ownerMap}');

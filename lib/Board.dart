@@ -21,6 +21,7 @@ import 'package:simple_url_preview/simple_url_preview.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'Chatdetails.dart';
 import 'Detailboard.dart';
 import 'sqlite/MeetingId_sql_helper.dart';
 
@@ -37,6 +38,7 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
   late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   var itemList = [];
   var user;
+  var username = [];
   var meetingurl;
   var meetingid;
   var meetingpass;
@@ -106,6 +108,12 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
                     .push(MaterialPageRoute(builder: (context) => LikeChat()))
               },
             ),
+            IconButton(
+              icon: Icon(Icons.autorenew),
+              onPressed: () => {
+              _loadData()
+              },
+            ),
           ]),
       body: Column(children: [
         Padding(
@@ -140,142 +148,155 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
               physics: AlwaysScrollableScrollPhysics(),
               itemCount: itemMap.length,
               itemBuilder: (context, index) => GestureDetector(
-                  child: Card(
-                    elevation: 100,
-                    color: Colors.orange[200],
-                    margin: EdgeInsets.all(15),
-                    child: Column(children: [
-                      Row(
-                        children: [
-                          Padding(padding: const EdgeInsets.all(10.0)),
-                          Container(
-                            width: 50.0,
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: (_getUrlResult[itemMap[index]
-                                              ['name']] ==
-                                          null)
-                                      ? NetworkImage(
-                                          'https://pbs.twimg.com/profile_images/1318213516935917568/mbU5hOLy_400x400.png')
-                                      : NetworkImage(
-                                          _getUrlResult[itemMap[index]['name']]
-                                              as String)),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50.0)),
-                              color: Colors.orange[200],
+                child: Card(
+                  elevation: 100,
+                  color: Colors.orange[200],
+                  margin: EdgeInsets.all(15),
+                  child: Column(children: [
+                    Row(
+                      children: [
+                        Padding(padding: const EdgeInsets.all(10.0)),
+                        Container(
+                          width: 50.0,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: (_getUrlResult[itemMap[index]['name']] ==
+                                        null)
+                                    ? NetworkImage(
+                                        'https://pbs.twimg.com/profile_images/1318213516935917568/mbU5hOLy_400x400.png')
+                                    : NetworkImage(
+                                        _getUrlResult[itemMap[index]['name']]
+                                            as String)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50.0)),
+                            color: Colors.orange[200],
+                          ),
+                        ),
+                        Padding(padding: const EdgeInsets.all(10.0)),
+                        Column(
+                          children: [
+                            Card(
+                              color: Colors.orange[100],
+                              child: Column(children: [
+                                Text((itemMap[index]['name']),
+                                    style: TextStyle(color: Colors.black)),
+                                SelectableText(itemMap[index]['createdAt'],
+                                    style: TextStyle(color: Colors.black)),
+                              ]),
                             ),
-                          ),
-                          Padding(padding: const EdgeInsets.all(10.0)),
-                          Column(
-                            children: [
-                              Card(
-                                color: Colors.orange[100],
-                                child: Column(children: [
-                                  Text((itemMap[index]['name']),
-                                      style: TextStyle(color: Colors.black)),
-                                  SelectableText(itemMap[index]['createdAt'],
-                                      style: TextStyle(color: Colors.black)),
-                                ]),
-                              ),
-                              Card(
-                                color: Colors.orange[50],
-                                child: (itemMap[index]['edited'] == "true")
-                                    ? Text('編集済み',
-                                        style: TextStyle(fontSize: 10))
-                                    : SizedBox.shrink(),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: const EdgeInsets.all(30.0)),
-                          Row(
-                            children: [
-                              (itemMap[index]['owner'] == user)
-                                  ? IconButton(
-                                      icon: Icon(Icons.edit),
-                                      iconSize: 20,
-                                      onPressed: itemMap[index]['owner'] == user
-                                          ? () {
-                                              _showForm(itemMap[index]['id']);
-                                            }
-                                          : null)
+                            Card(
+                              color: Colors.orange[50],
+                              child: (itemMap[index]['edited'] == "true")
+                                  ? Text('編集済み',
+                                      style: TextStyle(
+                                          fontSize: 10, color: Colors.black))
                                   : SizedBox.shrink(),
-                              (itemMap[index]['owner'] == user)
-                                  ? IconButton(
-                                      icon: Icon(Icons.delete),
-                                      iconSize: 20,
-                                      onPressed: itemMap[index]['owner'] == user
-                                          ? () {
-                                              _delete(itemMap[index]['id']);
-                                            }
-                                          : null)
-                                  : SizedBox.shrink(),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
+                        Padding(padding: const EdgeInsets.all(30.0)),
+                        Row(
+                          children: [
+                            (itemMap[index]['owner'] == user)
+                                ? IconButton(
+                                    icon: Icon(Icons.edit),
+                                    iconSize: 20,
+                                    onPressed: itemMap[index]['owner'] == user
+                                        ? () {
+                                            _showForm(itemMap[index]['id']);
+                                          }
+                                        : null)
+                                : SizedBox.shrink(),
+                            (itemMap[index]['owner'] == user)
+                                ? IconButton(
+                                    icon: Icon(Icons.delete),
+                                    iconSize: 20,
+                                    onPressed: itemMap[index]['owner'] == user
+                                        ? () {
+                                            _delete(itemMap[index]['id']);
+                                          }
+                                        : null)
+                                : SizedBox.shrink(),
+                          ],
+                        ),
+                      ],
+                    ),
+                    ListTile(
+                      title: SubstringHighlight(
+                        text: itemMap[index]['description'],
+                        term: getSplittedURL(itemMap[index]['description']) ==
+                                null
+                            ? ""
+                            : getSplittedURL(itemMap[index]['description']),
+                        textStyle: defaultStyle,
+                        textStyleHighlight: highlightStyle,
                       ),
-                      ListTile(
-                        title: SubstringHighlight(
-                          text: itemMap[index]['description'],
-                          term: getSplittedURL(itemMap[index]['description']) ==
-                                  null
-                              ? ""
-                              : getSplittedURL(itemMap[index]['description']),
-                          textStyle: defaultStyle,
-                          textStyleHighlight: highlightStyle,
-                        ),
-                        trailing: SizedBox(
-                          width: 10,
-                        ),
+                      trailing: SizedBox(
+                        width: 10,
                       ),
-                      SimpleUrlPreview(
-                        isClosable: true,
-                        bgColor: Colors.orange[200],
-                        url: _URLLink(itemMap[index]['description'])
-                                    .toString() !=
-                                ""
-                            ? _URLLink(itemMap[index]['description']).toString()
-                            : "",
-                        titleStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        descriptionStyle: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        siteNameStyle: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onTap: () => _launchURL(itemMap[index]['description']),
+                    ),
+                    SimpleUrlPreview(
+                      isClosable: true,
+                      bgColor: Colors.orange[200],
+                      url: _URLLink(itemMap[index]['description']).toString() !=
+                              ""
+                          ? _URLLink(itemMap[index]['description']).toString()
+                          : "",
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
                       ),
-                      Card(
+                      descriptionStyle: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      siteNameStyle: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onTap: () => _launchURL(itemMap[index]['description']),
+                    ),
+                    Card(
                         color: Colors.orange[100],
                         margin: EdgeInsets.all(15),
                         child: Column(children: [
                           Row(children: [
                             (itemMap[index]['good'].isEmpty)
-                                ? IconButton(
-                                    icon: Icon(MdiIcons.heartPlusOutline),
-                                    iconSize: 20,
-                                    onPressed: () {
-                                      _updategood(itemMap[index]['id'],
-                                          itemMap[index]['good']);
-                                    })
+                                ? Stack(overflow: Overflow.visible, children: [
+                                    IconButton(
+                                        icon: Icon(MdiIcons.heartPlusOutline),
+                                        iconSize: 20,
+                                        onPressed: () {
+                                          _updategood(itemMap[index]['id'],
+                                              itemMap[index]['good']);
+                                        }),
+                                    Positioned(
+                                        top: -8,
+                                        left: 20,
+                                        child: NotificationNumberBadge(
+                                            itemMap[index]['good'].length, Colors.red))
+                                  ])
                                 : (getgoodststus(itemMap[index]['good']) ==
                                         'true')
-                                    ? IconButton(
+                                    ? Stack(overflow: Overflow.visible, children: [
+                                      IconButton(
                                         icon: Icon(MdiIcons.heart),
                                         iconSize: 20,
                                         onPressed: () {
                                           _updategood(itemMap[index]['id'],
                                               itemMap[index]['good']);
                                         },
-                                      )
-                                    : IconButton(
+                                      ),
+                              Positioned(
+                                  top: -8,
+                                  left: 20,
+                                  child: NotificationNumberBadge(
+                                      itemMap[index]['good'].length, Colors.red))
+                            ])
+                                : IconButton(
                                         icon: Icon(MdiIcons.heartPlusOutline),
                                         iconSize: 20,
                                         onPressed: () {
@@ -315,18 +336,28 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
                                       _confirminfo();
                                     })
                                 : SizedBox.shrink(),
-                            IconButton(
-                              icon: Icon(Icons.reply),
-                              iconSize: 20,
-                              onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Thread(itemMap[index])),
+                            Stack(
+                              overflow: Overflow.visible,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.reply),
+                                  iconSize: 20,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Thread(itemMap[index])),
+                                    );
+                                  },
                                 ),
-                              },
-                            ),
+                                Positioned(
+                                    top: -8,
+                                    left: 20,
+                                    child: NotificationNumberBadge(
+                                        mythreadMap.length, Colors.red))
+                              ],
+                            )
                             /*FloatingActionButton(
                           onPressed: () async {
                             if (_controller.isCompleted) {
@@ -348,55 +379,67 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
                           ),
                         ),*/
                           ]),
-                          Row(
-    children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
+                          Row(children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Goodcount(itemMap[index]['good'])));
+                              },
+                              child: Text(
+                                  (itemMap[index]['good'].isEmpty)
+                                      ? ''
+                                      : ' いいね   ＞＞',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12)),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                  builder: (context) =>
-                                  Goodcount(itemMap[index]['good'])));
-                            },
-                            child: Text(
-                                (itemMap[index]['good'].isEmpty)
-                                    ? ''
-                                    : '　❤️ :  ${itemMap[index]['good'].length} 人   ＞＞',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold, fontSize: 12)),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Thread(itemMap[index])),
-                              );
-                            },
-                            child: Text(
-                                (Convert_threadMaps(itemMap[index]['id']) ==
-                                    false)
-                                    ? ''
-                                    : '　スレッド :  ${mythreadMap.length} 件   ＞＞',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold, fontSize: 12)),
-                          ),
-                        ]),
-                      ])),
-                    ]),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Detailboard(itemMap[index])),
-                    );
-                    print('detail: ${itemMap[index]}');
-                  }),
+                                      builder: (context) =>
+                                          Thread(itemMap[index])),
+                                );
+                              },
+                              child: Text(
+                                  (Convert_threadMaps(itemMap[index]['id']) ==
+                                          false)
+                                      ? ''
+                                      : '　スレッド   ＞＞',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12)),
+                            ),
+                          ]),
+                        ])),
+                  ]),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Detailboard(itemMap[index])),
+                  );
+                },
+                onDoubleTap: () {
+                  (itemMap[index]['name'] != username[0])
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Chatdetails(itemMap[index]['name'])),
+                        )
+                      : null;
+                },
+              ),
             ),
           ),
         ),
@@ -407,6 +450,20 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
             _showForm(null);
             this._scaffoldKey.currentState;
           }),
+    );
+  }
+
+  static Widget NotificationNumberBadge(int num, Color col) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Icon(
+          Icons.brightness_1,
+          color: col,
+          size: 25,
+        ),
+        Text(num.toString(),style: TextStyle(color: Colors.white),),
+      ],
     );
   }
 
@@ -453,6 +510,7 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
         print("user's email is ${attribute.value}");
         setState(() {
           user = attribute.value;
+          username = user.split('@');
         });
       }
     }
@@ -494,7 +552,7 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
                     decoration: InputDecoration(
                         icon: Icon(Icons.comment),
                         hintText: '内容',
-                        labelText: 'コメント *'),
+                        labelText: 'ボード *'),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -604,8 +662,6 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
   }
 
   Future _loadData() async {
-    //Future.delay()を使用して擬似的に非同期処理を表現してみた笑
-    await Future.delayed(Duration(seconds: 2));
     _fetch();
     _initialStarterGet();
     if (initialcounter) {
@@ -851,8 +907,6 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
 
         var response = await operation.response;
         var data = response.data;
-        _fetch();
-
         print('_updategood result: ' + data);
       } on ApiException catch (e) {
         print('Mutation failed: $e');
@@ -982,13 +1036,13 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
   }
 
   bool? Convert_threadMaps(id) {
-    mythreadMap=[];
+    mythreadMap = [];
     print('threadMaplen : ${threadMap.length}');
     for (int i = 0; i < threadMap.length; i++) {
       print('threadMap${[i]} : ${threadMap[i]['subject']}');
       print('id : ${id}');
       if (threadMap[i]['subject'] == id) {
-          mythreadMap.add(threadMap[i]);
+        mythreadMap.add(threadMap[i]);
       }
     }
     print('${id}のスレッド数は${mythreadMap.length}件');

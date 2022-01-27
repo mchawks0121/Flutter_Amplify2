@@ -5,6 +5,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'CalendarScreen.dart';
 import 'Configuration.dart';
 import 'Board.dart';
+import 'RandomChat.dart';
+import 'RandomChatSetting.dart';
+import 'RandomChatSettings.dart';
 
 class TabPage extends StatelessWidget {
 
@@ -13,16 +16,18 @@ class TabPage extends StatelessWidget {
     final _kTabPages = <Widget>[
       Board(),
       MyChat(),
+      RandomChat(),
+      RandomChatSetting(),
       Zoomindex(),
-      CalendarScreen(),
       Configuration(),
     ];
 
     final _kTabs = <Tab>[
-      const Tab(icon: Icon(Icons.chat_bubble_outline), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(MdiIcons.bulletinBoard), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
       const Tab(icon: Icon(Icons.chat), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(MdiIcons.chatOutline), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
+      const Tab(icon: Icon(MdiIcons.chatAlert), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
       const Tab(icon: Icon(Icons.videocam), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
-    const Tab(icon: Icon(MdiIcons.calendarCheck), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
       const Tab(icon: Icon(Icons.person_outline), height: 55, iconMargin: EdgeInsets.only(bottom: 1.0)),
     ];
     return DefaultTabController(

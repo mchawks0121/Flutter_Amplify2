@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
@@ -13,6 +15,7 @@ import 'Tab.dart';
 import 'amplifyconfiguration.dart';
 import 'sqlite/Login_sql_helper.dart' as Loginsql;
 import 'sqlite/Secure_sql_helper.dart' as Securesql;
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 Future<void> main() async {
   initializeDateFormatting('ja_JP');
@@ -21,7 +24,6 @@ Future<void> main() async {
 
 class App extends StatelessWidget {
   List<Map<String, dynamic>> _journals = [];
-
   @override
   void initState() {
     initState();
@@ -49,6 +51,9 @@ class App extends StatelessWidget {
         '/login': (BuildContext context) => new Login(),
         '/tab': (BuildContext context) => new TabPage(),
       },
+      navigatorObservers: [
+      routeObserver,
+      ],
     );
   }
 
@@ -75,6 +80,7 @@ class _MyAppState extends State<Login> {
   late bool loginstate;
   List<BiometricType>? _availableBiometrics;
   var user = "";
+  late var len;
 
   @override
   void initState() {
@@ -442,6 +448,7 @@ class _MyAppState extends State<Login> {
           password: _passwordController.text,
           options: CognitoSignUpOptions(userAttributes: userAttributes));
       print(res.isSignUpComplete);
+      setAlluser(_mailAddressController.text);
       _confirminfo();
     } on AuthException catch (authError) {
       _signuperror();
@@ -450,16 +457,80 @@ class _MyAppState extends State<Login> {
 
   void setAlluser(user) async {
     try {
-      String graphQLDocument = '''mutation CreateOwner(\$owner: String!) {
-              createOwner(input: {owner: \$owner}) {
+      String graphQLDocument_get = '''query listOwners {
+      listOwners {
+        items {
+          id
+          createdAt
+          owner
+          count
+          updatedAt
+        }
+        nextToken
+      }
+    }''';
+      var operation = Amplify.API.query(
+          request: GraphQLRequest<String>(
+            document: graphQLDocument_get,
+          ));
+      var response = await operation.response;
+
+      Map<String, dynamic> map = jsonDecode(response.data);
+      len = map['listOwners']['items'].length;
+
+
+      String graphQLDocument_set = '''mutation CreateOwner(\$owner: String!, \$count: Int!) {
+              createOwner(input: {owner: \$owner, count: \$count}) {
                 owner
+                count
               }
         }''';
 
+      var count = len + 1;
       List<String> str = [];
       str = user.split('@');
       var variables = {
         "owner": str[0],
+        "count": count,
+      };
+      var request = GraphQLRequest<String>(
+          document: graphQLDocument_set, variables: variables);
+
+      operation = Amplify.API.mutate(request: request);
+      response = await operation.response;
+
+      var data = response.data;
+      //_createChatList();
+      print('result: ' + data);
+    } on ApiException catch (e) {
+      print('failed: $e');
+    }
+  }
+
+  void _createChatList() async {
+    try {
+      String graphQLDocument =
+      '''mutation CreateChatList(\$owner: String, \$count: Int!) {
+              createChatList(input: {owner: \$owner, count: \$count) {
+                id
+                owner
+                count
+              }
+        }''';
+
+      var attributes = await Amplify.Auth.fetchUserAttributes();
+      var user = "";
+      List<String> str = [];
+      for (var attribute in attributes) {
+        if (attribute.userAttributeKey == 'email') {
+          user = attribute.value;
+        }
+      }
+      str = user.split('@');
+      var count = len + 1;
+      var variables = {
+        "owner": str[0],
+        "count": count,
       };
       var request = GraphQLRequest<String>(
           document: graphQLDocument, variables: variables);
@@ -498,7 +569,6 @@ class _MyAppState extends State<Login> {
       _deleteItem();
       _addItem(1, _mailAddressController.text, 'true');
       _refreshJournals();
-      setAlluser(_mailAddressController.text);
       await Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) => TabPage()), (_) => false);
     } on AuthException catch (authError) {

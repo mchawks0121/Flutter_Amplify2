@@ -93,7 +93,6 @@ class _FirstPageState extends State<Configuration> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('サインアウト: $returnVal'),
-                  action: SnackBarAction(label: 'OK', onPressed: () {}),
                 ),
               );
             }

@@ -26,6 +26,10 @@
 	<string>The app tries to use your camera</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>生体認証に使用します</string>
+	<key>UIBackgroundModes</key>
+        <array>
+            <string>remote-notification</string>
+        </array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>The app tries to use your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>

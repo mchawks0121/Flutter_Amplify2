@@ -193,24 +193,6 @@ class _MyAppState extends State<PasscodeLogin> {
         ));
   }
 
-
-  void _authenticaterror() async {
-    print("ログインできません");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('認証失敗しました'),
-        action: SnackBarAction(label: 'OK', onPressed: () {}),
-      ),
-    );
-  }
-
-  void _Fetchlockstatus() async {
-    final data = await Securesql.SQLHelper.getlockstatus();
-    setState(() {
-      _Lockjournals = data;
-    });
-  }
-
   _onPasscodeCancelled() {
     Navigator.maybePop(context);
   }
@@ -229,6 +211,23 @@ class _MyAppState extends State<PasscodeLogin> {
     }else {
       _authenticaterror();
     }
+  }
+
+  void _authenticaterror() async {
+    print("ログインできません");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('認証失敗しました'),
+        action: SnackBarAction(label: 'OK', onPressed: () {}),
+      ),
+    );
+  }
+
+  void _Fetchlockstatus() async {
+    final data = await Securesql.SQLHelper.getlockstatus();
+    setState(() {
+      _Lockjournals = data;
+    });
   }
 
   Future<void> _getAvailableBiometricTypes() async {

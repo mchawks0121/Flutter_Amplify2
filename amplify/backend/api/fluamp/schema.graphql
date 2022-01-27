@@ -29,13 +29,15 @@ type Thread @model
 type ChatList @model
 {
   id: ID!
+  to: String
   owner: String
-  name: String
+  count: Int!
 }
 
 type Chat @model
 {
   id: ID! @index(name: "byCreatedAt", sortKeyFields: ["count"])
+  ownerid: String
   owner: String
   description: String
   to: String
@@ -48,11 +50,42 @@ type Chat @model
 
 type Owner @model
 {
+  id: ID!
   owner: String
+  count: Int!
+  updatedAt: String
 }
 
 type Liked @model
 {
   owner: String
   commentId: String!
+}
+
+type RandomChatList @model
+{
+  id: ID!
+  count: Int!
+  name: String
+}
+
+type RandomChat @model
+{
+  id: ID! @index(name: "byCreatedAt", sortKeyFields: ["count"])
+  owner: String
+  description: String
+  to: String
+  room: String
+  count: Int!
+  createdAt: String
+}
+
+type RandomChatTimeset @model
+{
+  id: ID! @index(name: "byCreatedAt", sortKeyFields: ["count"])
+  owner: String
+  time: String
+  limit: Int
+  count: Int!
+  createdAt: String
 }
