@@ -4,10 +4,13 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:fluamp/CommunityCode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'PasscodeLogin.dart';
@@ -19,7 +22,10 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 Future<void> main() async {
   initializeDateFormatting('ja_JP');
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(App());
+  //runApp(CommunityCode());
 }
 
 class App extends StatelessWidget {
@@ -111,19 +117,7 @@ class _MyAppState extends State<Login> {
         child: ListView(children: <Widget>[
           Container(
             width: double.infinity,
-            child: GestureDetector(
-              onTap: () {
-                _launchURL("https://aws.amazon.com/jp/cognito/"); //amplifyのURL
-              },
-              child: Text(
-                "Amazon AWS Cognito",
-                style: TextStyle(
-                  color: Colors.red,
-                  decoration: TextDecoration.underline,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
+            child: IconButton(icon: Icon(MdiIcons.aws),onPressed: () { _launchURL("https://aws.amazon.com/jp/amplify/"); },)
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -168,6 +162,7 @@ class _MyAppState extends State<Login> {
               onPressed: () => _signIn(),
             ),
           ),
+          /*
           RaisedButton(
             color: Colors.red,
             onPressed: () {
@@ -202,6 +197,8 @@ class _MyAppState extends State<Login> {
             child:
                 const Text('生体認証(ベータ版)', style: TextStyle(color: Colors.black)),
           ),
+          */
+
           RaisedButton(
             color: Colors.orangeAccent,
             onPressed: () {
@@ -223,6 +220,16 @@ class _MyAppState extends State<Login> {
                 style: TextStyle(color: Colors.black)),
           ),
           Text('パスワードをお忘れの方はメールアドレスを記入して↑をタップしてください'),
+          RaisedButton(
+            color: Colors.lightBlue,
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (context) => CommunityCode()), (_) => true);
+            },
+            child: const Text('コミュニティコード',
+                style: TextStyle(color: Colors.black)),
+          ),
+          Text('コミュニティで参加する方は↑をタップしてください'),
         ]),
       ),
     );

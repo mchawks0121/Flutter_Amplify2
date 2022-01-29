@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "355574060300",
+    "project_id": "fluamp",
+    "storage_bucket": "fluamp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:355574060300:android:29826483005e0aa00ce529",
+        "android_client_info": {
+          "package_name": "com.example.fluamp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "355574060300-ue3o10v912op6dae2muf05e8nue7ekei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMOMppZkOTGbqYa2bNH5YAqo6iwMTVdTc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "355574060300-ue3o10v912op6dae2muf05e8nue7ekei.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "355574060300-sru932md23mk7s10e9ct02ajq53s8ad1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sample.fluamp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

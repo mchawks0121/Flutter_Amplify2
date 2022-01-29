@@ -94,6 +94,7 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
     _subscribeCreate();
     _subscribeUpdate();
     _subscribeDelete();
+    _subscribeUpdateGood();
     return Scaffold(
       key: this._scaffoldKey,
       drawerEdgeDragWidth: 0,
@@ -121,19 +122,7 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
         ),
         Container(
           width: double.infinity,
-          child: GestureDetector(
-            onTap: () {
-              _launchURL("https://aws.amazon.com/jp/amplify/"); //amplifyのURL
-            },
-            child: Text(
-              "Amazon AWS Amplify",
-              style: TextStyle(
-                color: Colors.red,
-                decoration: TextDecoration.underline,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
+          child: IconButton(icon: Icon(MdiIcons.aws),onPressed: () { _launchURL("https://aws.amazon.com/jp/amplify/"); },)
         ),
         Padding(
           padding: const EdgeInsets.all(5.0),
@@ -296,7 +285,8 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
                                   child: NotificationNumberBadge(
                                       itemMap[index]['good'].length, Colors.red))
                             ])
-                                : IconButton(
+                                :Stack(overflow: Overflow.visible, children: [
+                                  IconButton(
                                         icon: Icon(MdiIcons.heartPlusOutline),
                                         iconSize: 20,
                                         onPressed: () {
@@ -304,6 +294,12 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
                                               itemMap[index]['good']);
                                         },
                                       ),
+                              Positioned(
+                                  top: -8,
+                                  left: 20,
+                                  child: NotificationNumberBadge(
+                                      itemMap[index]['good'].length, Colors.red))
+                            ]),
                             IconButton(
                               icon: Icon(Icons.grade),
                               iconSize: 20,
@@ -1127,6 +1123,34 @@ class _BoardState extends State<Board> with TickerProviderStateMixin {
               print(eventdata);
               setNotification('[更新]: $eventname', eventdata);
             }
+          },
+          onEstablished: () {
+            //getUrlall();
+            print('UpdateSubscription established');
+          },
+          onError: (e) {
+            print('UpcateSubscription failed with error: $e');
+          },
+          onDone: () {
+            print('Subscription has been closed successfully');
+          });
+    } on ApiException catch (e) {
+      print('Failed to establish subscription: $e');
+    }
+  }
+
+  void _subscribeUpdateGood() async {
+    try {
+      String graphQLDocument = '''subscription OnUpdateTodo {
+        onUpdateTodo {
+                good
+              }
+        }''';
+
+      var operation = Amplify.API.subscribe(
+          request: GraphQLRequest<String>(document: graphQLDocument),
+          onData: (event) {
+            _fetch();
           },
           onEstablished: () {
             //getUrlall();

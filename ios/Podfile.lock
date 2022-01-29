@@ -56,25 +56,52 @@ PODS:
     - AWSS3 (~> 2.26.1)
   - AppSyncRealTimeClient (1.6.0):
     - Starscream (~> 3.1.1)
-  - AWSAuthCore (2.26.5):
-    - AWSCore (= 2.26.5)
-  - AWSCognitoIdentityProvider (2.26.5):
-    - AWSCognitoIdentityProviderASF (= 2.26.5)
-    - AWSCore (= 2.26.5)
-  - AWSCognitoIdentityProviderASF (2.26.5)
-  - AWSCore (2.26.5)
-  - AWSMobileClient (2.26.5):
-    - AWSAuthCore (= 2.26.5)
-    - AWSCognitoIdentityProvider (= 2.26.5)
-    - AWSCognitoIdentityProviderASF (= 2.26.5)
-    - AWSCore (= 2.26.5)
-  - AWSPinpoint (2.26.5):
-    - AWSCore (= 2.26.5)
+  - AWSAuthCore (2.26.7):
+    - AWSCore (= 2.26.7)
+  - AWSCognitoIdentityProvider (2.26.7):
+    - AWSCognitoIdentityProviderASF (= 2.26.7)
+    - AWSCore (= 2.26.7)
+  - AWSCognitoIdentityProviderASF (2.26.7):
+    - AWSCore (= 2.26.7)
+  - AWSCore (2.26.7)
+  - AWSMobileClient (2.26.7):
+    - AWSAuthCore (= 2.26.7)
+    - AWSCognitoIdentityProvider (= 2.26.7)
+    - AWSCognitoIdentityProviderASF (= 2.26.7)
+    - AWSCore (= 2.26.7)
+  - AWSPinpoint (2.26.7):
+    - AWSCore (= 2.26.7)
   - AWSPluginsCore (1.15.6):
     - Amplify (= 1.15.6)
     - AWSCore (~> 2.26.1)
-  - AWSS3 (2.26.5):
-    - AWSCore (= 2.26.5)
+  - AWSS3 (2.26.7):
+    - AWSCore (= 2.26.7)
+  - Firebase/Auth (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (~> 8.11.0)
+  - Firebase/CoreOnly (8.11.0):
+    - FirebaseCore (= 8.11.0)
+  - firebase_auth (3.3.6):
+    - Firebase/Auth (= 8.11.0)
+    - firebase_core
+    - Flutter
+  - firebase_core (1.12.0):
+    - Firebase/CoreOnly (= 8.11.0)
+    - Flutter
+  - FirebaseAuth (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - FirebaseCore (8.11.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Logger (~> 7.7)
+  - FirebaseCoreDiagnostics (8.11.0):
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Logger (~> 7.7)
+    - nanopb (~> 2.30908.0)
   - Flutter (1.0.0)
   - flutter_app_badger (0.0.1):
     - Flutter
@@ -85,10 +112,35 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - GoogleDataTransport (9.1.2):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.7.0):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.7.0):
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/Logger (7.7.0):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/Network (7.7.0):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.7.0)"
+  - GoogleUtilities/Reachability (7.7.0):
+    - GoogleUtilities/Logger
+  - GTMSessionFetcher/Core (1.7.0)
   - image_picker (0.0.1):
     - Flutter
   - local_auth (0.0.1):
     - Flutter
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
   - ObjectMapper (4.2.0)
   - package_info (0.0.1):
     - Flutter
@@ -96,6 +148,7 @@ PODS:
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
+  - PromisesObjC (2.0.0)
   - share (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -115,6 +168,8 @@ DEPENDENCIES:
   - amplify_core (from `.symlinks/plugins/amplify_core/ios`)
   - amplify_flutter (from `.symlinks/plugins/amplify_flutter/ios`)
   - amplify_storage_s3 (from `.symlinks/plugins/amplify_storage_s3/ios`)
+  - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -143,8 +198,17 @@ SPEC REPOS:
     - AWSPinpoint
     - AWSPluginsCore
     - AWSS3
+    - Firebase
+    - FirebaseAuth
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
     - FMDB
+    - GoogleDataTransport
+    - GoogleUtilities
+    - GTMSessionFetcher
+    - nanopb
     - ObjectMapper
+    - PromisesObjC
     - Starscream
 
 EXTERNAL SOURCES:
@@ -162,6 +226,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amplify_flutter/ios"
   amplify_storage_s3:
     :path: ".symlinks/plugins/amplify_storage_s3/ios"
+  firebase_auth:
+    :path: ".symlinks/plugins/firebase_auth/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
   flutter_app_badger:
@@ -201,25 +269,36 @@ SPEC CHECKSUMS:
   amplify_storage_s3: 3b234e1797f116f7775a19f4220093578ec4299b
   AmplifyPlugins: 7cfe5a34e97c6091855c10d83ccda538fb371cd1
   AppSyncRealTimeClient: 8b5ec94085b8ee9bb6fb9d9d76a157beb538ec6f
-  AWSAuthCore: ac6f2bf01b136251f816ca99a21f142d4a1a17ef
-  AWSCognitoIdentityProvider: c7983af57977cf463041e818e3e0414add5dd02b
-  AWSCognitoIdentityProviderASF: e34812b1308d41a0d026ab5d54693fdc93e412b3
-  AWSCore: e84c89bded6fae98ae9c297c71f10f2c87eedc3d
-  AWSMobileClient: 29692a65143c9262e37a2a1c4d4c58c6bc2a85c3
-  AWSPinpoint: 26e73d71cb7b2b7e2b0ee12882331f4876fc5369
+  AWSAuthCore: e987fce9ad13ef8ac7d39d82305af21a63c590cf
+  AWSCognitoIdentityProvider: 94cb0197e41662e3d29ee0feeb0cfa10d2242302
+  AWSCognitoIdentityProviderASF: 306610c6b2df9a0449243911a67d44b49d0a708f
+  AWSCore: e7fc9a005c527f2623b699a3ff8595fc45c24bd9
+  AWSMobileClient: 318f7388a20424d2fe47fc946e3ba9b722b040b8
+  AWSPinpoint: 583934be6553b81021b6b4b95241b681d67f130e
   AWSPluginsCore: 46b75ee57b0a1f10d64f4fa6b3b4153f5900dd4f
-  AWSS3: aafe113c5fb59f9c82bd3ba26c2c3698e23d5a36
+  AWSS3: 56f405f45e17a1ff4378d582a0bdb0afa031078f
+  Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
+  firebase_auth: ccdb84a0d52a2d7897898ae8121689da6e13d71f
+  firebase_core: 443bccfd6aa6b42f07be365b500773dc69db2d87
+  FirebaseAuth: d96d73aba85d192d7a7aa0b86dd6d7f8ec170b4b
+  FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
+  FirebaseCoreDiagnostics: 64d9709d804a6c25bd77841371c1fcfd909d5601
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_app_badger: 65de4d6f0c34a891df49e6cfb8a1c0496426fa68
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_zoom_sdk: 62caf74a6f8822790a98b2251bf7f4a7e2590057
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
+  GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   local_auth: ef62030a2731330b95df7ef1331bd15f6a64b8a6
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
